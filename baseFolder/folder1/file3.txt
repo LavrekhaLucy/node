@@ -1,0 +1,1 @@
+Text 'Hello world' in file3 of folder1

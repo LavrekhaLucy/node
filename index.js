@@ -1,44 +1,45 @@
-require ('./hello_world/hello_world');
-const {foo:helperFoo} = require ('./helpers/helper')
-const readline = require('node:readline/promises');
 const path = require('path');
-
-//
-const foo = async () =>{
-    console.log("02.07.2025");
-    helperFoo();
-}
-foo();
-
-console.log("Hello from Node.js!");
-
-// console.log(__dirname);
-// console.log(__filename);
-// console.log(process.cwd());
-
-// const pathToFile = (__filename);
-
-// console.log(pathToFile);
-// console.log(path.dirname(pathToFile))
-// console.log(path.extname(pathToFile))
-// console.log(path.basename(pathToFile))
-// console.log(path.parse(pathToFile))
-// console.log(path.isAbsolute(pathToFile))
-// console.log(path.isAbsolute('USER\\IdeaProjects\\node\\index.js\n'))
+const fs = require('fs/promises');
 
 
-// Readline
-//
-// const rlInstance = readline.createInterface({
-//     input: process.stdin,
-//     output: process.stdout
-// })
-//
-// const name = await rlInstance.question('Name?');
-// console.log(`Your name is ${name}`);
-// process.exit(0);
-// }
 
-void foo();
+const baseFolder = path.join(__dirname, 'baseFolder');
+
+const createFoldersAndFiles = async () => {
+    await fs.mkdir(baseFolder, { recursive: true });
+
+    for (let i = 1; i <= 5; i++) {
+        const folder = path.join(baseFolder, `folder${i}`);
+        await fs.mkdir(folder, { recursive: true });
+
+        for (let j = 1; j <= 5; j++) {
+            const file = path.join(folder, `file${j}.txt`);
+            await fs.writeFile(file, `Text 'Hello world' in file${j} of folder${i}`);
+        }
+    }
 
 
+    const checkingPaths = [
+        path.join(__dirname, 'baseFolder'),
+        path.join(__dirname, 'baseFolder', 'folder1', 'file1.txt'),
+        path.join(__dirname, 'baseFolder', 'folder2', 'file2.txt'),
+        path.join(__dirname, 'baseFolder', 'folder3'),
+        path.join(__dirname, 'baseFolder', 'folder4', 'file4.txt'),
+        path.join(__dirname, 'baseFolder', 'folder5'),
+        path.join(__dirname, 'baseFolder', 'folder6','file6.txt'),
+        ];
+
+
+    for (const item of checkingPaths) {
+        try {
+            const stats = await fs.stat(item);
+            const type = stats.isDirectory() ? 'Folder' : stats.isFile() ? 'File' : 'Other';
+            console.log(`${item} → ${type}`);
+        } catch (err) {
+            console.log(`${item} → Not found`);
+        }
+    }
+
+};
+
+void createFoldersAndFiles();
