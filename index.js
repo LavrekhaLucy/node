@@ -1,8 +1,6 @@
 const path = require('path');
 const fs = require('fs/promises');
 
-
-
 const baseFolder = path.join(__dirname, 'baseFolder');
 
 const createFoldersAndFiles = async () => {
@@ -17,29 +15,27 @@ const createFoldersAndFiles = async () => {
             await fs.writeFile(file, `Text 'Hello world' in file${j} of folder${i}`);
         }
     }
-
-
-    const checkingPaths = [
-        path.join(__dirname, 'baseFolder'),
-        path.join(__dirname, 'baseFolder', 'folder1', 'file1.txt'),
-        path.join(__dirname, 'baseFolder', 'folder2', 'file2.txt'),
-        path.join(__dirname, 'baseFolder', 'folder3'),
-        path.join(__dirname, 'baseFolder', 'folder4', 'file4.txt'),
-        path.join(__dirname, 'baseFolder', 'folder5'),
-        path.join(__dirname, 'baseFolder', 'folder6','file6.txt'),
-        ];
-
-
-    for (const item of checkingPaths) {
-        try {
-            const stats = await fs.stat(item);
-            const type = stats.isDirectory() ? 'Folder' : stats.isFile() ? 'File' : 'Other';
-            console.log(`${item} → ${type}`);
-        } catch (err) {
-            console.log(`${item} → Not found`);
-        }
-    }
-
+    await readRecursively(baseFolder);
 };
 
+const readRecursively = async (dirPath) => {
+    try {
+        const items = await fs.readdir(dirPath, { withFileTypes: true });
+
+        for (const item of items) {
+            const fullPath = path.join(dirPath, item.name);
+
+            if (item.isDirectory()) {
+                console.log(`${fullPath} → Folder`);
+                await readRecursively(fullPath);
+            } else if (item.isFile()) {
+                console.log(`${fullPath} → File`);
+            } else {
+                console.log(`${fullPath} → Other`);
+            }
+        }
+    } catch (err) {
+        console.error(`${dirPath} → Error: ${err.message}`);
+    }
+};
 void createFoldersAndFiles();
