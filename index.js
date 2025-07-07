@@ -25,7 +25,6 @@ const users = [
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
 app.get('/users', (req, res) => {
     try {
         res.send(users);
@@ -49,7 +48,7 @@ app.get('/users/:userId', (req, res) => {
 
 app.post('/users', (req, res) => {
     try {
-        const { name, age } = req.body;
+        const { name, age, email, phone  } = req.body;
       // TODO validate data
 
         if (!name || name.length <= 3) {
@@ -60,7 +59,7 @@ app.post('/users', (req, res) => {
         }
 
         const id = users[users.length - 1].id + 1;
-        const newUser = { id, name, age};
+        const newUser = { id, name, age, email, phone };
         users.push(newUser);
         res.status(201).send(newUser);
     } catch (err) {
@@ -87,10 +86,6 @@ app.put('/users/:userId', (req, res) => {
         }
 
         users[userIndex] = { ...users[userIndex], name, age, email, phone };
-        // users[userIndex].name = name;
-        // users[userIndex].age = age;
-        // users[userIndex].email = email;
-        // users[userIndex].phone = phone;
 
         res.status(200).send(users[userIndex]);
     } catch (err) {
