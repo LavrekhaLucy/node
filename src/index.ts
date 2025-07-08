@@ -1,7 +1,7 @@
 // const express = require('express');
 
 
-import express from "express";
+import express, {Request,Response} from "express";
 const app = express();
 const port = 3000;
 
@@ -24,12 +24,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-// app.get('/users',  (req, res)=> {
-//     res.send ('Hello from Express!');
-// });
-
-
-app.get('/users',  (req, res)=> {
+app.get('/users',  (req:Request, res:Response)=> {
     try{
         res.send (users);
     }
@@ -38,7 +33,7 @@ app.get('/users',  (req, res)=> {
     }
 
 });
-app.post('/users',  (req, res)=> {
+app.post('/users',  (req:Request, res:Response)=> {
     try{
         const {name,email,phone} = req.body;
         // TODO validate data
@@ -67,7 +62,7 @@ app.post('/users',  (req, res)=> {
 //     }
 //
 // })
-// app.put ('/users/:userId',  (req, res)=> {
+// app.put ('/users/:userId', (req:Request, res:Response)=> {
 //     try{
 //         const userId = Number(req.params.userId)
 //         const userIndex =users.findIndex((user) => user.id === userId);
@@ -88,9 +83,7 @@ app.post('/users',  (req, res)=> {
 //
 // })
 
-
-
-app.get('/users/:userId',  (req, res)=> {
+app.get('/users/:userId',  (req:Request, res:Response)=> {
     try{
    const userId = Number(req.params.userId)
    const user = users.find(user=>user.id === userId)
@@ -101,18 +94,18 @@ app.get('/users/:userId',  (req, res)=> {
     }
 });
 
-app.post('/users',  (req, res)=> {
+app.post('/users',  (req:Request, res:Response)=> {
     // console.log(req.body);
     // console.log(req.query);
     res.send ('Hello world!');
 });
 
-app.post('/users/:userId',  (req, res)=> {
-    console.log(req.body);
-    console.log(req.params);
-    console.log(req.query);
-    res.send ('Hello world!');
-});
+// app.post('/users/:userId',  (req:Request, res:Response))=> {
+//     console.log(req.body);
+//     console.log(req.params);
+//     console.log(req.query);
+//     res.send ('Hello world!');
+// });
 
 app.listen(port, () => {
     console.log(`Server started on http://localhost:${ port }`);
