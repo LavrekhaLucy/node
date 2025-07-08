@@ -1,4 +1,7 @@
-const express = require('express');
+// const express = require('express');
+
+
+import express from "express";
 const app = express();
 const port = 3000;
 
@@ -49,41 +52,41 @@ app.post('/users',  (req, res)=> {
     }
 
 });
-
-app.delete('/users/:userId',  (req, res)=> {
-    try{
-        const userId = Number(req.params.userId)
-        const userIndex =users.findIndex((user) => user.id === userId);
-        if (userIndex ===-1){
-            return res.status(404).send('User not found');
-        }
-        users.splice(userIndex, 1);
-        res.sendStatus(204);
-    }catch(err){
-        res.status(500).send('Error');
-    }
-
-})
-app.put ('/users/:userId',  (req, res)=> {
-    try{
-        const userId = Number(req.params.userId)
-        const userIndex =users.findIndex((user) => user.id === userId);
-        if (userIndex ===-1){
-            return res.status(404).send('User not found');
-        }
-        const {name,email,phone}=req.body;
-        // TODO validate data
-
-        users[userIndex].name = name;
-        users[userIndex].email = email;
-        users[userIndex].phone = phone;
-        res.sendStatus(201).send (users[userIndex]);
-
-    }catch(err){
-        res.status(500).send('Error');
-    }
-
-})
+//
+// app.delete('/users/:userId',  (req:Request, res:Response)=> {
+//     try{
+//         const userId = Number(req.params.userId)
+//         const userIndex =users.findIndex((user) => user.id === userId);
+//         if (userIndex ===-1){
+//             return res.status(404).send('User not found');
+//         }
+//         users.splice(userIndex, 1);
+//         res.sendStatus(204);
+//     }catch(err){
+//         res.status(500).send('Error');
+//     }
+//
+// })
+// app.put ('/users/:userId',  (req, res)=> {
+//     try{
+//         const userId = Number(req.params.userId)
+//         const userIndex =users.findIndex((user) => user.id === userId);
+//         if (userIndex ===-1){
+//             return res.status(404).send('User not found');
+//         }
+//         const {name,email,phone}=req.body;
+//         // TODO validate data
+//
+//         users[userIndex].name = name;
+//         users[userIndex].email = email;
+//         users[userIndex].phone = phone;
+//         res.sendStatus(201).send (users[userIndex]);
+//
+//     }catch(err){
+//         res.status(500).send('Error');
+//     }
+//
+// })
 
 
 
