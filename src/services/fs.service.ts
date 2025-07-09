@@ -1,7 +1,7 @@
 import * as fs from 'node:fs/promises';
 
 import path from 'node:path';
-import {IUser} from "./interfaces/user.interface.js";
+import {IUser} from '../interfaces/user.interface';
 
 const read = async ():Promise<IUser[]> => {
     try{
@@ -19,5 +19,5 @@ const write = async (users:IUser[]):Promise<void> => {
     }catch(err) {
         console.log('write error', err.message);
     }
-}
-export {read, write}
+};
+export {read, write};

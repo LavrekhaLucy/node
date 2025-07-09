@@ -1,7 +1,7 @@
 // const express = require('express');
 
 
-import express, {Request,Response} from "express";
+import express, { Request, Response} from 'express';
 const app = express();
 const port = 3000;
 
@@ -29,7 +29,7 @@ app.get('/users',  (req:Request, res:Response)=> {
         res.send (users);
     }
     catch(err){
-        res.status(500).send('Error');
+        res.status(500).send(err.message);
     }
 
 });
@@ -38,19 +38,19 @@ app.post('/users',  (req:Request, res:Response)=> {
         const {name,email,phone} = req.body;
         // TODO validate data
         const id = users[users.length - 1].id+1;
-        const newUser = {id,name,email,phone}
+        const newUser = {id,name,email,phone};
         users.push(newUser);
         res.status (201).send (newUser);
     }
     catch(err){
-        res.status(500).send('Error');
+        res.status(500).send(err.message);
     }
 
 });
 //
 // app.delete('/users/:userId',  (req:Request, res:Response)=> {
 //     try{
-//         const userId = Number(req.params.userId)
+//         const userId = Number(req.params.userId);
 //         const userIndex =users.findIndex((user) => user.id === userId);
 //         if (userIndex ===-1){
 //             return res.status(404).send('User not found');
@@ -58,13 +58,14 @@ app.post('/users',  (req:Request, res:Response)=> {
 //         users.splice(userIndex, 1);
 //         res.sendStatus(204);
 //     }catch(err){
-//         res.status(500).send('Error');
+//         res.status(500).send(err.message);
+//
 //     }
 //
-// })
+// });
 // app.put ('/users/:userId', (req:Request, res:Response)=> {
 //     try{
-//         const userId = Number(req.params.userId)
+//         const userId = Number(req.params.userId);
 //         const userIndex =users.findIndex((user) => user.id === userId);
 //         if (userIndex ===-1){
 //             return res.status(404).send('User not found');
@@ -78,34 +79,34 @@ app.post('/users',  (req:Request, res:Response)=> {
 //         res.sendStatus(201).send (users[userIndex]);
 //
 //     }catch(err){
-//         res.status(500).send('Error');
+//         res.status(500).send(err.message);
 //     }
 //
-// })
+// });
 
 app.get('/users/:userId',  (req:Request, res:Response)=> {
     try{
-   const userId = Number(req.params.userId)
-   const user = users.find(user=>user.id === userId)
+   const userId = Number(req.params.userId);
+   const                         user = users.find(user=>user.id === userId);
     res.send (user);
     }
     catch(err){
-        res.status(500).send('Error');
+        res.status          (500).send(err.message);
     }
 });
 
-app.post('/users',  (req:Request, res:Response)=> {
+app.post('/users',                   (req:Request, res:Response)=> {
     // console.log(req.body);
     // console.log(req.query);
     res.send ('Hello world!');
 });
 
-// app.post('/users/:userId',  (req:Request, res:Response))=> {
-//     console.log(req.body);
-//     console.log(req.params);
-//     console.log(req.query);
-//     res.send ('Hello world!');
-// });
+app.post                 ('/users/:userId',  (req:Request, res:Response)=> {
+    console.log(req.body);
+    console.log(req.params);
+    console.log(req.query);
+    res.send ('Hello world!');
+});
 
 app.listen(port, () => {
     console.log(`Server started on http://localhost:${ port }`);
