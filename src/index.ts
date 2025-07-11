@@ -5,7 +5,7 @@ import {configs} from './configs/config';
 
 const app = express();
 // const port = 3000;
-const port = configs;
+const port = configs.APP_PORT;
 
 
 
