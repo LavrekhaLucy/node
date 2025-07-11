@@ -1,9 +1,11 @@
 import express, {NextFunction, Request, Response} from 'express';
 import {ApiError} from './errors/api-error';
 import {userRouter} from './routers/user.router';
+import {configs} from './configs/config';
 
 const app = express();
-const port = 3000;
+// const port = 3000;
+const port = configs;
 
 
 
