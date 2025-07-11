@@ -9,7 +9,6 @@ const router = Router();
 router.get('/', userController.getList);
 router.post('/', userController.create);
 router.get('/:userId', userController.getById);
-// router.put('/:userId', userController.putById);
 
 router.put('/:userId', userController.putById.bind(userController));
 router.delete('/:userId', userController.delete);
