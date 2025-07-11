@@ -2,10 +2,14 @@ import express, {NextFunction, Request, Response} from 'express';
 import {ApiError} from './errors/api-error';
 import {userRouter} from './routers/user.router';
 import {configs} from './configs/config';
+import * as mongoose from 'mongoose';
+
 
 const app = express();
-// const port = 3000;
+
 const port = configs.APP_PORT;
+const host = configs.APP_HOST;
+const mongo = configs.MONGO_URI;
 
 
 
@@ -21,7 +25,9 @@ app.use((error: ApiError, req: Request, res: Response, _next: NextFunction) => {
 
 
 app.listen(port, () => {
-    console.log(`Server started on http://localhost:${port}`);
+ mongoose.connect(`${mongo}`);
+
+    console.log(`Server started on https://${host}:${port}`);
 });
 
 
