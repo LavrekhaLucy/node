@@ -17,5 +17,27 @@ class CommonMiddleware {
         };
     }
 }
+//     isIdValid: (param: string) => (req: Request, res: Response, next: NextFunction) => {
+//         const id = Number(req.params[param]);
+//         if (!id || id < 1) {
+//     return res.status(400).json({ error: `Invalid ${param}` });
+// }
+// next();
+// },
+
+//     isBodyValid: (schema: Joi.ObjectSchema) =>
+//         (req: Request, res: Response, next: NextFunction) => {
+//             const {
+//     error
+// }
+//
+// = schema.validate(req.body);
+// if (error) {
+//     return res.status(400).json({error: error.details[0].message});
+// }
+// next();
+// },
+// }
+// }
 
 export const commonMiddleware = new CommonMiddleware();
