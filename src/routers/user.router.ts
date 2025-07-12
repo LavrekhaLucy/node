@@ -7,7 +7,7 @@ import {commonMiddleware} from '../middlewares/common.middleware';
 
 const router = Router();
 
-router.get('/', userController.getList);
+router.get('/', userController.getList);//TODO
 router.post('/', userController.create);
 
 router.get('/:userId',commonMiddleware.isIdValid('userId'), userController.getById);
