@@ -25,7 +25,8 @@ app.use((error: ApiError, req: Request, res: Response, _next: NextFunction) => {
 
 
 app.listen(port, () => {
- mongoose.connect(`${mongo}`);
+ mongoose.connect(`${mongo}`)
+ .then(() => console.log('Connected to MongoDB:'));
 
     console.log(`Server started on https://${host}:${port}`);
 });
