@@ -1,21 +1,37 @@
 import { Router } from 'express';
 import {userController} from '../controllers/user.controllers';
 import {commonMiddleware} from '../middlewares/common.middleware';
-
-
+import {updateUserSchema, userBodySchema, userIdSchema, userQuerySchema} from '../models/joi.model';
 
 
 const router = Router();
 
-router.get('/', userController.getList);//TODO
-router.post('/', userController.create);
+router.get('/',
+    commonMiddleware.isQueryValid(userQuerySchema),
+    userController.getList);
 
-router.get('/:userId',commonMiddleware.isIdValid('userId'), userController.getById);
-router.put('/:userId',commonMiddleware.isIdValid('userId'), userController.putById.bind(userController));
-router.delete('/:userId',commonMiddleware.isIdValid('userId'), userController.delete);
+
+router.post('/',
+    commonMiddleware.isBodyValid(userBodySchema),
+    userController.create);
+
+
+router.get('/:userId',
+    commonMiddleware.isParamsValid(userIdSchema),
+    userController.getById);
+
+
+router.put('/:userId',
+    commonMiddleware.isParamsValid(userIdSchema),
+    commonMiddleware.isBodyValid(updateUserSchema),
+    userController.putById.bind(userController));
+
+
+router.delete('/:userId',
+    commonMiddleware.isParamsValid(userIdSchema),
+    userController.delete);
 
 
 
 export const userRouter = router;
 
-console.log('userRouter is:', typeof userRouter);

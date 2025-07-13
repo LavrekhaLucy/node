@@ -1,14 +1,15 @@
-import { NextFunction, Request, Response } from 'express';
-import { isObjectIdOrHexString } from 'mongoose';
-
-import { ApiError } from '../errors/api-error';
+import {NextFunction, Request, Response} from 'express';
+import Joi from 'joi';
+import {ApiError} from '../errors/api-error';
 
 class CommonMiddleware {
-    public isIdValid(key: string) {
+    public isParamsValid(schema: Joi.ObjectSchema) {
         return (req: Request, res: Response, next: NextFunction) => {
             try {
-                if (!isObjectIdOrHexString(req.params[key])) {
-                    throw new ApiError('Invalid ID', 400);
+                const {error} = schema.validate(req.params);
+                if (error) {
+                    const errorMessage = error.details.map(detail => detail.message).join(', ');
+                    throw new ApiError(errorMessage, 400);
                 }
                 next();
             } catch (e) {
@@ -16,28 +17,37 @@ class CommonMiddleware {
             }
         };
     }
-}
-//     isIdValid: (param: string) => (req: Request, res: Response, next: NextFunction) => {
-//         const id = Number(req.params[param]);
-//         if (!id || id < 1) {
-//     return res.status(400).json({ error: `Invalid ${param}` });
-// }
-// next();
-// },
+    public isBodyValid(schema: Joi.ObjectSchema) {
+            return (req: Request, res: Response, next: NextFunction) => {
+                try {
+                    const {error} = schema.validate(req.body);
+                    if (error) {
+                        const errorMessage = error.details.map(detail => detail.message).join(', ');
+                        throw new ApiError(errorMessage, 400);
+                    }
+                    next();
+                } catch (e) {
+                    next(e);
+                }
+            };
+        }
 
-//     isBodyValid: (schema: Joi.ObjectSchema) =>
-//         (req: Request, res: Response, next: NextFunction) => {
-//             const {
-//     error
-// }
-//
-// = schema.validate(req.body);
-// if (error) {
-//     return res.status(400).json({error: error.details[0].message});
-// }
-// next();
-// },
-// }
-// }
+    public isQueryValid(schema: Joi.ObjectSchema) {
+            return (req: Request, res: Response, next: NextFunction) => {
+                try {
+                    const {error} = schema.validate(req.query);
+                    if (error) {
+                        const errorMessage = error.details.map(detail => detail.message).join(', ');
+                        throw new ApiError(errorMessage, 400);
+                    }
+                    next();
+                } catch (e) {
+                    next(e);
+                }
+            };
+        }
+    }
+
 
 export const commonMiddleware = new CommonMiddleware();
+
