@@ -10,19 +10,19 @@ class UserRepository {
        return  await User.create(dto);
     }
 
-    public async getById(userId: string): Promise<IUser | null> {
+    public async getById(userId: string): Promise<IUser> {
         return await User.findById(userId);
     }
 
 
 
-    public async putById(userId: string, dto: Partial<IUser>): Promise<IUser | null> {
+    public async updateById(userId: string, dto: Partial<IUser>): Promise<IUser> {
         return await User.findByIdAndUpdate(userId,dto,{new:true});
     }
 
 
-    public async delete (userId: string): Promise<void>  {
-await  User.deleteOne({_id: userId});
+    public async deleteById (userId: string): Promise<void>  {
+      await  User.deleteOne({_id: userId});
     }
 
 }

@@ -9,7 +9,7 @@ const app = express();
 
 const port = configs.APP_PORT;
 const host = configs.APP_HOST;
-// const mongo = configs.MONGO_URI;
+
 
 
 

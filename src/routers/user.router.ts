@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import {userController} from '../controllers/user.controllers';
 import {commonMiddleware} from '../middlewares/common.middleware';
-import {updateUserSchema, userBodySchema, userIdSchema, userQuerySchema} from '../models/joi.model';
+import {updateUserSchema, userBodySchema, userIdSchema, userQuerySchema} from '../validators/user.validator';
 
 
 const router = Router();
@@ -24,12 +24,12 @@ router.get('/:userId',
 router.put('/:userId',
     commonMiddleware.isParamsValid(userIdSchema),
     commonMiddleware.isBodyValid(updateUserSchema),
-    userController.putById.bind(userController));
+    userController.updateById.bind(userController));
 
 
 router.delete('/:userId',
     commonMiddleware.isParamsValid(userIdSchema),
-    userController.delete);
+    userController.deleteById);
 
 
 

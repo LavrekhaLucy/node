@@ -9,16 +9,9 @@ class UserService {
     }
 
     public async create(dto: Partial<IUser>): Promise<IUser> {
-        if (!dto.name || dto.name.length < 3) {
-            throw new ApiError(
-                'Name is required and should be at least 3 characters long', 400,);}
-        if (!dto.name || dto.name.length <= 3) {
-            throw new ApiError ('Name must be longer than 3 characters', 400);}
-        if (isNaN(dto.age) || dto.age < 0) {
-            throw new ApiError ('Age must be a number greater than or equal to 0', 400);}
-
         return await userRepository.create(dto);
     }
+
 
     public async getById(userId: string): Promise<IUser> {
         const user = await userRepository.getById(userId);
@@ -28,21 +21,20 @@ class UserService {
         return user;
     }
 
-    public async putById(userId: string, dto: Partial<IUser>): Promise<IUser> {
-            const user = await userRepository.putById(userId, dto);
+    public async updateById(userId: string, dto: Partial<IUser>): Promise<IUser> {
+            const user = await userRepository.updateById(userId, dto);
             if (!user) {
                 throw new ApiError('User not found', 404);
             }
             return user;
     }
 
-    public async delete(userId: string): Promise<void> {
-        const user = await userRepository.delete(userId);
-        // if (!user) {
-        //     throw new ApiError('User not found', 404);
-        // }
-        return user;
+    public async deleteById(userId: string): Promise<void> {
+      await userRepository.deleteById(userId);
+
     }
+
+
 }
 
 export const userService = new UserService();
