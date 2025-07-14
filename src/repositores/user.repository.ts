@@ -1,5 +1,5 @@
 import {IUser} from '../interfaces/user.interface';
-import {User} from '../models/model';
+import {User} from '../models/user.model';
 
 class UserRepository {
     public async getList(): Promise<IUser[]> {
