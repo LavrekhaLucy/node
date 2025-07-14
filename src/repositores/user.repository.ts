@@ -15,8 +15,12 @@ class UserRepository {
     }
 
 
+    public async getByEmail(email: string): Promise<IUser | null> {
+        return await User.findOne({ email }).select('+password');
+    }
 
-    public async updateById(userId: string, dto: Partial<IUser>): Promise<IUser | null> {
+
+    public async updateById(userId: string, dto: Partial<IUser>): Promise<IUser> {
         return await User.findByIdAndUpdate(userId,dto,{new:true});
     }
 
