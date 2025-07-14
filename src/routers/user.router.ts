@@ -10,11 +10,10 @@ router.get('/', userController.getList);
 router.post('/', userController.create);
 router.get('/:userId', userController.getById);
 
-router.put('/:userId', userController.putById.bind(userController));
+router.put('/:userId', userController.updateById.bind(userController));
 router.delete('/:userId', userController.delete);
 
 
 
 export const userRouter = router;
 
-console.log('userRouter is:', typeof userRouter);

@@ -29,11 +29,11 @@ class UserRepository {
 
 
 
-    public async putById(userId: number, dto: Partial<IUser>): Promise<IUser | null> {
+    public async updateById(userId: number, dto: Partial<IUser>): Promise<IUser | null> {
         const users = await read();
         const userIndex = users.findIndex(user => user.id === userId);
 
-        if (userIndex === -1) {return null;}
+        if (userIndex === -1) throw new Error('User not found');
 
         users[userIndex] = {...users[userIndex], ...dto,};
 

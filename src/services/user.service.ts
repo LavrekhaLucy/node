@@ -28,8 +28,8 @@ class UserService {
         return user;
     }
 
-    public async putById(userId: number, dto: Partial<IUser>): Promise<IUser> {
-            const user = await userRepository.putById(userId, dto);
+    public async updateById(userId: number, dto: Partial<IUser>): Promise<IUser> {
+            const user = await userRepository.updateById(userId, dto);
             if (!user) {
                 throw new ApiError('User not found', 404);
             }
