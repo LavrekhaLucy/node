@@ -9,7 +9,7 @@ const app = express();
 
 const port = configs.APP_PORT;
 const host = configs.APP_HOST;
-// const mongo = configs.MONGO_URI;
+const mongo = configs.MONGO_URI;
 
 
 
@@ -25,10 +25,10 @@ app.use((error: ApiError, req: Request, res: Response, _next: NextFunction) => {
 
 
 app.listen(port, async ()  => {
- await mongoose.connect(configs.MONGO_URI);
+ await mongoose.connect(mongo);
 
 
     console.log(`Server started on https://${host}:${port}`);
 });
 
-////
+

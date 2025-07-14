@@ -16,12 +16,12 @@ class UserRepository {
 
 
 
-    public async putById(userId: string, dto: Partial<IUser>): Promise<IUser | null> {
+    public async updateById(userId: string, dto: Partial<IUser>): Promise<IUser | null> {
         return await User.findByIdAndUpdate(userId,dto,{new:true});
     }
 
 
-    public async delete (userId: string): Promise<void>  {
+    public async deleteById (userId: string): Promise<void>  {
 await  User.deleteOne({_id: userId});
     }
 

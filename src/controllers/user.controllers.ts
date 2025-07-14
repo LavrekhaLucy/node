@@ -32,27 +32,22 @@ class UserController {
         }
     }
 
-    public async putById(req: Request, res: Response, next: NextFunction) {
+    public async updateById(req: Request, res: Response, next: NextFunction) {
         try {
 
             const userId = req.params.userId;
             const dto = req.body;
-
-            const result = await userService.putById(userId, dto);
-
-            if (!result) {
-                return res.status(404).send('User not found');
-            }
+            const result = await userService.updateById(userId, dto);
             res.json(result);
         } catch (e) {
             next(e);
         }
     }
 
-    public async delete(req: Request, res: Response, next: NextFunction) {
+    public async deleteById(req: Request, res: Response, next: NextFunction) {
         try {
             const userId = req.params.userId;
-            const result = await userService.delete(userId);
+            const result = await userService.deleteById(userId);
             res.json(result);
         } catch (e) {
             next(e);
