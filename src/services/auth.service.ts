@@ -13,7 +13,7 @@ class AuthService {
         dto: Partial<IUser>,
     ): Promise<{ user: IUser; tokens: ITokenPair }> {
         await this.isEmailExistOrThrow(dto.email);
-        const password = await passwordService.hashPassword(dto.password);
+        const password = await passwordService.hashPassword(dto.password);console.log('HERE');
         const user = await userRepository.create({ ...dto, password });
 
         const tokens = tokenService.generateTokens({

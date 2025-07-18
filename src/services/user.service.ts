@@ -8,9 +8,9 @@ class UserService {
         return await userRepository.getList();
     }
 
-    public async create(dto: Partial<IUser>): Promise<IUser> {
-         return await userRepository.create(dto);
-    }
+    // public async create(dto: Partial<IUser>): Promise<IUser> {
+    //      return await userRepository.create(dto);
+    // }
 
     public async getById(userId: string): Promise<IUser> {
         const user = await userRepository.getById(userId);

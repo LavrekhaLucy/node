@@ -9,6 +9,12 @@ export const userIdSchema = Joi.object({
 export const userBodySchema = Joi.object({
     name: Joi.string().min(3).required(),
     email: Joi.string().email().required(),
+    password: Joi.string()
+        .pattern(new RegExp('^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$'))
+        .required()
+        .messages({
+            'string.pattern.base': 'Password must be at least 8 characters long and contain both letters and numbers',
+        }),
     age: Joi.number().min(0).required(),
     phone: Joi.string().pattern(/^\+?\d{7,15}$/).optional(),
     role: Joi.string().valid(...Object.values(RoleEnum)).default(RoleEnum.User),
@@ -19,6 +25,12 @@ export const userBodySchema = Joi.object({
 export const updateUserSchema = Joi.object({
     name: Joi.string().min(3).optional(),
     email: Joi.string().email().optional(),
+    password: Joi.string()
+        .pattern(new RegExp('^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$'))
+        .required()
+        .messages({
+            'string.pattern.base': 'Password must be at least 8 characters long and contain both letters and numbers',
+        }),
     age: Joi.number().integer().min(0).optional(),
     phone: Joi.string().pattern(/^\+?\d{7,15}$/).optional(),
     role: Joi.string().valid(...Object.values(RoleEnum)).optional(),

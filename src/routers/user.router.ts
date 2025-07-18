@@ -1,7 +1,7 @@
-import { Router } from 'express';
+import {Router} from 'express';
 import {userController} from '../controllers/user.controllers';
 import {commonMiddleware} from '../middlewares/common.middleware';
-import {updateUserSchema, userBodySchema, userIdSchema, userQuerySchema} from '../validators/user.validator';
+import {updateUserSchema, userIdSchema, userQuerySchema} from '../validators/user.validator';
 
 
 const router = Router();
@@ -10,10 +10,10 @@ router.get('/',
     commonMiddleware.isQueryValid(userQuerySchema),
     userController.getList);
 
-
-router.post('/',
-    commonMiddleware.isBodyValid(userBodySchema),
-    userController.create);
+//
+// router.post('/',
+//     commonMiddleware.isBodyValid(userBodySchema),
+//     userController.create);
 
 
 router.get('/:userId',

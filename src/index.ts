@@ -3,6 +3,7 @@ import {ApiError} from './errors/api-error';
 import {userRouter} from './routers/user.router';
 import {configs} from './configs/config';
 import * as mongoose from 'mongoose';
+import {authRouter} from './routers/auth.router';
 
 
 const app = express();
@@ -17,6 +18,8 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 app.use('/users', userRouter);
+app.use('/auth', authRouter);
+
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((error: ApiError, req: Request, res: Response, _next: NextFunction) => {

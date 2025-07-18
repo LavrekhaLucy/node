@@ -25,7 +25,6 @@ class TokenService {
 
     }
 
-
     public verifyToken(token: string, type: TokenTypeEnum): ITokenPayload {
         try {
             let secret: string;
