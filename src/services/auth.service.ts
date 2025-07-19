@@ -1,21 +1,19 @@
 import { ApiError } from '../errors/api-error';
 import { ITokenPair } from '../interfaces/token.interface';
 import { ISignIn, IUser } from '../interfaces/user.interface';
-
 import { passwordService } from './password.service';
-import {userRepository} from '../repositores/user.repository';
-import {tokenService} from './token.service';
+import { tokenService } from './token.service';
 import {tokenRepository} from '../repositores/token.repository';
-
+import {userRepository} from '../repositores/user.repository';
 
 class AuthService {
     public async signUp(
         dto: Partial<IUser>,
     ): Promise<{ user: IUser; tokens: ITokenPair }> {
         await this.isEmailExistOrThrow(dto.email);
-        const password = await passwordService.hashPassword(dto.password);console.log('HERE');
+        const password = await passwordService.hashPassword(dto.password);
         const user = await userRepository.create({ ...dto, password });
-
+        console.log('Created user:', user);
         const tokens = tokenService.generateTokens({
             userId: user._id,
             role: user.role,
