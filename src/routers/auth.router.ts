@@ -1,8 +1,9 @@
 import {Router} from 'express';
-
 import {authController} from '../controllers/auth.controller';
 import {commonMiddleware} from '../middlewares/common.middleware';
 import {updateUserSchema} from '../validators/user.validator';
+import {authMiddleware} from '../middlewares/auth.middleware';
+
 
 const router = Router();
 
@@ -17,6 +18,13 @@ router.post(
     authController.signIn,
 );
 
-//TODO add refresh token route
+router.post(
+    '/refresh',
+    authMiddleware.checkRefreshToken,
+    authController.refreshToken,
+);
+
+
+
 
 export const authRouter = router;

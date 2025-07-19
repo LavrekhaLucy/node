@@ -1,15 +1,15 @@
-import {NextFunction, Request, Response} from 'express';
-import Joi from 'joi';
-import {ApiError} from '../errors/api-error';
+import { NextFunction, Request, Response } from 'express';
+import { ObjectSchema } from 'joi';
+import { isObjectIdOrHexString } from 'mongoose';
+
+import { ApiError } from '../errors/api-error';
 
 class CommonMiddleware {
-    public isParamsValid(schema: Joi.ObjectSchema) {
+    public isIdValid(key: string) {
         return (req: Request, res: Response, next: NextFunction) => {
             try {
-                const {error} = schema.validate(req.params);
-                if (error) {
-                    const errorMessage = error.details.map(detail => detail.message).join(', ');
-                    throw new ApiError(errorMessage, 400);
+                if (!isObjectIdOrHexString(req.params[key])) {
+                    throw new ApiError('Invalid ID', 400);
                 }
                 next();
             } catch (e) {
@@ -17,37 +17,17 @@ class CommonMiddleware {
             }
         };
     }
-    public isBodyValid(schema: Joi.ObjectSchema) {
-            return (req: Request, res: Response, next: NextFunction) => {
-                try {
-                    const {error} = schema.validate(req.body);
-                    if (error) {
-                        const errorMessage = error.details.map(detail => detail.message).join(', ');
-                        throw new ApiError(errorMessage, 400);
-                    }
-                    next();
-                } catch (e) {
-                    next(e);
-                }
-            };
-        }
 
-    public isQueryValid(schema: Joi.ObjectSchema) {
-            return (req: Request, res: Response, next: NextFunction) => {
-                try {
-                    const {error} = schema.validate(req.query);
-                    if (error) {
-                        const errorMessage = error.details.map(detail => detail.message).join(', ');
-                        throw new ApiError(errorMessage, 400);
-                    }
-                    next();
-                } catch (e) {
-                    next(e);
-                }
-            };
-        }
+    public isBodyValid(validator: ObjectSchema) {
+        return async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                req.body = await validator.validateAsync(req.body);
+                next();
+            } catch (e) {
+                next(new ApiError(e.details[0].message, 400));
+            }
+        };
     }
-
+}
 
 export const commonMiddleware = new CommonMiddleware();
-

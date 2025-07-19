@@ -5,11 +5,7 @@ import { tokenService } from '../services/token.service';
 import {tokenRepository} from '../repositores/token.repository';
 
 class AuthMiddleware {
-    public async checkAccessToken(
-        req: Request,
-        res: Response,
-        next: NextFunction,
-    ) {
+    public async checkAccessToken(req: Request, res: Response, next: NextFunction,) {
         try {
             const header = req.headers.authorization;
             if (!header) {
@@ -31,6 +27,21 @@ class AuthMiddleware {
             next(e);
         }
     }
+
+    public checkRefreshToken(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { refreshToken } = req.body;
+            if (!refreshToken) {
+                throw new ApiError('Refresh token missing', 401);
+            }
+        tokenService.verifyToken(refreshToken, TokenTypeEnum.REFRESH);
+
+            next();
+        } catch (e) {
+            next(e);
+        }
+    }
 }
+
 
 export const authMiddleware = new AuthMiddleware();

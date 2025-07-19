@@ -1,37 +1,29 @@
-import {Router} from 'express';
-import {userController} from '../controllers/user.controllers';
-import {commonMiddleware} from '../middlewares/common.middleware';
-import {updateUserSchema, userIdSchema, userQuerySchema} from '../validators/user.validator';
+import { Router } from 'express';
 
+
+import { authMiddleware } from '../middlewares/auth.middleware';
+import { commonMiddleware } from '../middlewares/common.middleware';
+
+import {userController} from '../controllers/user.controllers';
+import {updateUserSchema} from '../validators/user.validator';
 
 const router = Router();
 
-router.get('/',
-    commonMiddleware.isQueryValid(userQuerySchema),
-    userController.getList);
+router.get('/', userController.getList);
 
-//
-// router.post('/',
-//     commonMiddleware.isBodyValid(userBodySchema),
-//     userController.create);
-
-
-router.get('/:userId',
-    commonMiddleware.isParamsValid(userIdSchema),
-    userController.getById);
-
-
-router.put('/:userId',
-    commonMiddleware.isParamsValid(userIdSchema),
+router.get('/me', authMiddleware.checkAccessToken, userController.getMe);
+router.put(
+    '/me',
+    authMiddleware.checkAccessToken,
     commonMiddleware.isBodyValid(updateUserSchema),
-    userController.updateById.bind(userController));
+    userController.updateMe,
+);
+router.delete('/me', authMiddleware.checkAccessToken, userController.deleteMe);
 
-
-router.delete('/:userId',
-    commonMiddleware.isParamsValid(userIdSchema),
-    userController.deleteById);
-
-
+router.get(
+    '/:userId',
+    commonMiddleware.isIdValid('userId'),
+    userController.getById,
+);
 
 export const userRouter = router;
-

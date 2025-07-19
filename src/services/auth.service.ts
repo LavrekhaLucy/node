@@ -5,6 +5,8 @@ import { passwordService } from './password.service';
 import { tokenService } from './token.service';
 import {tokenRepository} from '../repositores/token.repository';
 import {userRepository} from '../repositores/user.repository';
+import {userService} from './user.service';
+import {TokenTypeEnum} from '../enums/token-type.enum';
 
 class AuthService {
     public async signUp(
@@ -46,7 +48,31 @@ class AuthService {
         return { user, tokens };
     }
 
-    // TODO add refresh token service
+    public async refreshToken(refreshToken: string): Promise<ITokenPair> {
+        if (!refreshToken) {
+            throw new ApiError('No refresh token provided', 401);
+        }
+
+        const payload = tokenService.verifyToken(refreshToken, TokenTypeEnum.REFRESH);
+
+        const tokenFromDB = await tokenRepository.findByParams({ refreshToken });
+
+        if (!tokenFromDB) {
+            throw new ApiError('Invalid refresh token', 401);
+        }
+
+        const user = await userService.getById(payload.userId);
+
+        const newTokens = tokenService.generateTokens({
+            userId: user._id,
+            role: user.role,
+        });
+
+        await tokenRepository.create({ ...newTokens, _userId: user._id });
+
+        return newTokens;
+    }
+
 
     private async isEmailExistOrThrow(email: string): Promise<void> {
         const user = await userRepository.getByEmail(email);
