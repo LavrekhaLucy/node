@@ -1,7 +1,7 @@
 import {Router} from 'express';
 import {authController} from '../controllers/auth.controller';
 import {commonMiddleware} from '../middlewares/common.middleware';
-import {updateUserSchema} from '../validators/user.validator';
+import {signInSchema, updateUserSchema} from '../validators/user.validator';
 import {authMiddleware} from '../middlewares/auth.middleware';
 
 
@@ -12,11 +12,13 @@ router.post(
     commonMiddleware.isBodyValid(updateUserSchema),
     authController.signUp,
 );
+
 router.post(
     '/sign-in',
-    //  commonMiddleware.isBodyValid(updateUserSchema),
-    authController.signIn,
+    commonMiddleware.isBodyValid(signInSchema),
+    authController.signIn
 );
+
 
 router.post(
     '/refresh',
