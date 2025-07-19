@@ -30,4 +30,36 @@ class CommonMiddleware {
     }
 }
 
+
+//
+// // middlewares/validation.middleware.js
+// const { body, validationResult } = require('express-validator');
+//
+// // Middleware для обработки ошибок валидации
+// const handleValidationErrors = (req, res, next) => {
+//     const errors = validationResult(req);
+//     if (!errors.isEmpty()) {
+//         return res.status(400).json({ errors: errors.array() });
+//     }
+//     next(); // Если ошибок нет, передаем управление следующему middleware/контроллеру
+// };
+//
+// // Правила валидации для маршрута входа (sign-in)
+// const signInValidationRules = () => {
+//     return [
+//         body('email')
+//             .isEmail().withMessage('Please enter a valid email address.')
+//             .normalizeEmail(), // Опционально: нормализовать email (например, в нижний регистр)
+//         body('password')
+//             .isLength({ min: 6 }).withMessage('Password must be at least 6 characters long.'),
+//         // Дополнительные проверки могут быть добавлены здесь, если нужно
+//     ];
+// };
+//
+// module.exports = {
+//     signInValidationRules,
+//     handleValidationErrors
+// };
+
+
 export const commonMiddleware = new CommonMiddleware();
