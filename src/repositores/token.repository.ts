@@ -9,6 +9,9 @@ class TokenRepository {
     public async findByParams(params: Partial<IToken>): Promise<IToken | null> {
         return await Token.findOne(params);
     }
+    public async deleteByParams(params: Partial<IToken>): Promise<void> {
+        await Token.deleteMany(params);
+    }
 }
 
 export const tokenRepository = new TokenRepository();

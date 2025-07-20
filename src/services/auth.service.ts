@@ -80,6 +80,13 @@ class AuthService {
 
         return newTokens;
     }
+    public async logout(refreshToken: string): Promise<void> {
+         await tokenRepository.deleteByParams({ refreshToken });
+            }
+
+    public async logoutAll(userId: string): Promise<void> {
+        await tokenRepository.deleteByParams({ _userId: userId });
+    }
 
 
     private async isEmailExistOrThrow(email: string): Promise<void> {

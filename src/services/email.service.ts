@@ -44,6 +44,8 @@ class EmailService {
         const options = { to, subject, template, context };
         await this.transporter.sendMail(options);
     }
+
+
 }
 
 export const emailService = new EmailService();

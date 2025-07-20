@@ -13,6 +13,10 @@ export const emailConstants = {
         subject: 'Old visit',
         template: 'old-visit',
     },
+    [EmailTypeEnum.LOGOUT_ALL]: {
+        subject: 'You are signed out of all devices',
+        template: 'logout-all'
+}
 };
 
-///
+
