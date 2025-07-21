@@ -3,6 +3,7 @@ import { TokenTypeEnum } from '../enums/token-type.enum';
 import { ApiError } from '../errors/api-error';
 import { tokenService } from '../services/token.service';
 import {tokenRepository} from '../repositores/token.repository';
+import {ITokenPayload} from '../interfaces/token.interface';
 
 class AuthMiddleware {
     public async checkAccessToken(req: Request, res: Response, next: NextFunction,) {
@@ -12,10 +13,7 @@ class AuthMiddleware {
                 throw new ApiError('Token is not provided', 401);
             }
             const accessToken = header.split('Bearer ')[1];
-            const payload = tokenService.verifyToken(
-                accessToken,
-                TokenTypeEnum.ACCESS,
-            );
+            const payload = tokenService.verifyToken(accessToken, TokenTypeEnum.ACCESS) as ITokenPayload;
 
             const pair = await tokenRepository.findByParams({accessToken});
             if (!pair) {

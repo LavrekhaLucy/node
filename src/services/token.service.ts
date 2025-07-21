@@ -21,6 +21,7 @@ class TokenService {
                 expiresIn: configs.JWT_REFRESH_EXPIRATION,
             }
         );
+
         return { accessToken, refreshToken };
 
     }
@@ -38,6 +39,7 @@ class TokenService {
                     secret = configs.JWT_REFRESH_SECRET;
                     break;
             }
+
             return jsonwebtoken.verify(token, secret) as ITokenPayload;
         } catch (e) {
             console.error(e.message);

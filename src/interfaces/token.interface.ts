@@ -11,6 +11,9 @@ export interface IToken {
 export interface ITokenPayload {
     userId: string;
     role: RoleEnum;
+    email: string;
+    name: string;
+
 }
 
 export interface ITokenPair {

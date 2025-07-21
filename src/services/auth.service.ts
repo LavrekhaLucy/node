@@ -21,6 +21,8 @@ class AuthService {
         const tokens = tokenService.generateTokens({
             userId: user._id,
             role: user.role,
+            name:user.name,
+            email:user.email,
         });
         await tokenRepository.create({ ...tokens, _userId: user._id });
 
@@ -51,6 +53,8 @@ class AuthService {
         const tokens = tokenService.generateTokens({
             userId: user._id,
             role: user.role,
+            name:user.name,
+            email:user.email,
         });
         await tokenRepository.create({ ...tokens, _userId: user._id });
         return { user, tokens };
@@ -74,6 +78,8 @@ class AuthService {
         const newTokens = tokenService.generateTokens({
             userId: user._id,
             role: user.role,
+            name:user.name,
+            email:user.email,
         });
 
         await tokenRepository.create({ ...newTokens, _userId: user._id });

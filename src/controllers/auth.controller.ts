@@ -1,10 +1,9 @@
 import {NextFunction, Request, Response} from 'express';
 import {ISignIn, IUser} from '../interfaces/user.interface';
 import {authService} from '../services/auth.service';
-import {ITokenPair} from '../interfaces/token.interface';
+import {ITokenPair, ITokenPayload} from '../interfaces/token.interface';
 import {emailService} from '../services/email.service';
 import {EmailTypeEnum} from '../enums/email-type.enum';
-import {EmailPayloadCombined} from '../types/email-payload-combined.type';
 
 class AuthController {
     public async signUp(req: Request, res: Response, next: NextFunction) {
@@ -48,15 +47,14 @@ class AuthController {
         }
     }
 
-
-
 public async logoutAll(req: Request, res: Response, next: NextFunction) {
     try {
-        const { _id, email, name } = res.locals.jwtPayload as EmailPayloadCombined;
+        const { userId:_id, email, name } = res.locals.jwtPayload as ITokenPayload;
+
         await authService.logoutAll(_id);
         await emailService.sendMail(
             EmailTypeEnum.LOGOUT_ALL,
-            email,
+            'lavreha7@gmail.com',
             {
                 name,
                 email,
