@@ -17,7 +17,7 @@ class AuthMiddleware {
                 TokenTypeEnum.ACCESS,
             );
 
-            const pair = await tokenRepository.findByParams({ accessToken });
+            const pair = await tokenRepository.findByParams({accessToken});
             if (!pair) {
                 throw new ApiError('Token is not valid', 401);
             }
@@ -28,20 +28,24 @@ class AuthMiddleware {
         }
     }
 
-    public checkRefreshToken(req: Request, res: Response, next: NextFunction) {
+
+    public async checkRefreshToken(req: Request, res: Response, next: NextFunction) {
         try {
-            const { refreshToken } = req.body;
+            const {refreshToken} = req.body;
             if (!refreshToken) {
                 throw new ApiError('Refresh token missing', 401);
             }
-        tokenService.verifyToken(refreshToken, TokenTypeEnum.REFRESH);
-
+            const tokenPair = await tokenRepository.findByParams({ refreshToken: refreshToken });
+            if (!tokenPair) {
+                throw new ApiError('Refresh token is invalid or has been revoked', 401);
+            }
+            const payload = tokenService.verifyToken(refreshToken, TokenTypeEnum.REFRESH);
+            req.res.locals.jwtPayload = payload;
             next();
         } catch (e) {
             next(e);
         }
     }
 }
-
 
 export const authMiddleware = new AuthMiddleware();

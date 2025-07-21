@@ -12,6 +12,7 @@ class TokenRepository {
     public async deleteByParams(params: Partial<IToken>): Promise<void> {
         await Token.deleteMany(params);
     }
+
 }
 
 export const tokenRepository = new TokenRepository();

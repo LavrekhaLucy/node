@@ -81,14 +81,19 @@ class AuthService {
         return newTokens;
     }
     public async logout(refreshToken: string): Promise<void> {
+
+        const token = await tokenRepository.findByParams({ refreshToken });
+        if (!token) throw new ApiError('Refresh token not found', 404);
+
          await tokenRepository.deleteByParams({ refreshToken });
             }
 
+
     public async logoutAll(userId: string): Promise<void> {
-        await tokenRepository.deleteByParams({ _userId: userId });
+        const result = await tokenRepository.deleteByParams({ _userId: userId });
+        console.log(`Deleted ${result} tokens for user ${userId}`);
+
     }
-
-
     private async isEmailExistOrThrow(email: string): Promise<void> {
         const user = await userRepository.getByEmail(email);
         if (user) {

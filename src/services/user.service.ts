@@ -1,6 +1,6 @@
-import { ApiError } from '../errors/api-error';
-import { ITokenPayload } from '../interfaces/token.interface';
-import { IUser } from '../interfaces/user.interface';
+import {ApiError} from '../errors/api-error';
+import {ITokenPayload} from '../interfaces/token.interface';
+import {IUser} from '../interfaces/user.interface';
 import {userRepository} from '../repositores/user.repository';
 
 
@@ -32,6 +32,9 @@ class UserService {
     public async deleteMe(jwtPayload: ITokenPayload): Promise<void> {
         return await userRepository.deleteById(jwtPayload.userId);
     }
+
+
+
 }
 
 export const userService = new UserService();
