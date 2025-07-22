@@ -39,7 +39,11 @@ class EmailService {
         to: string,
         context: EmailTypeToPayload[T],
     ): Promise<void> {
+
         const { subject, template } = emailConstants[type];
+
+
+        context['frontUrl'] = configs.FRONTEND_URL;
 
         const options = { to, subject, template, context };
         await this.transporter.sendMail(options);

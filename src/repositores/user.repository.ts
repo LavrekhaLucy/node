@@ -31,4 +31,5 @@ await  User.deleteOne({_id: userId});
 
 }
 
+
 export const userRepository = new UserRepository();
