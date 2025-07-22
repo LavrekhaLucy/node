@@ -8,10 +8,6 @@ class UserMiddleware {
         try {
             const { email } = req.body;
 
-            if (!email) {
-                throw new ApiError('Email is required', 400);
-            }
-
             const user = await userRepository.getByEmail(email);
             if (user) {
                 throw new ApiError(`User with email ${email} already exists`, 409);
