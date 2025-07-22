@@ -1,7 +1,7 @@
-import { NextFunction, Request, Response } from 'express';
-import { TokenTypeEnum } from '../enums/token-type.enum';
-import { ApiError } from '../errors/api-error';
-import { tokenService } from '../services/token.service';
+import {NextFunction, Request, Response} from 'express';
+import {TokenTypeEnum} from '../enums/token-type.enum';
+import {ApiError} from '../errors/api-error';
+import {tokenService} from '../services/token.service';
 import {tokenRepository} from '../repositores/token.repository';
 import {ITokenPayload} from '../interfaces/token.interface';
 
@@ -44,6 +44,7 @@ class AuthMiddleware {
             next(e);
         }
     }
+
 }
 
 export const authMiddleware = new AuthMiddleware();

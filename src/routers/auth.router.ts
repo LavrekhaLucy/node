@@ -3,6 +3,7 @@ import {authController} from '../controllers/auth.controller';
 import {commonMiddleware} from '../middlewares/common.middleware';
 import {signInSchema, updateUserSchema} from '../validators/user.validator';
 import {authMiddleware} from '../middlewares/auth.middleware';
+import {userMiddleware} from '../middlewares/user.middleware';
 
 
 const router = Router();
@@ -10,6 +11,7 @@ const router = Router();
 router.post(
     '/sign-up',
     commonMiddleware.isBodyValid(updateUserSchema),
+    userMiddleware.isEmailExist,
     authController.signUp,
 );
 

@@ -14,10 +14,11 @@ class AuthService {
     public async signUp(
         dto: Partial<IUser>,
     ): Promise<{ user: IUser; tokens: ITokenPair }> {
-        await this.isEmailExistOrThrow(dto.email);
+
         const password = await passwordService.hashPassword(dto.password);
         const user = await userRepository.create({ ...dto, password });
         console.log('Created user:', user);
+
         const tokens = tokenService.generateTokens({
             userId: user._id,
             role: user.role,
@@ -33,6 +34,7 @@ class AuthService {
         );
         return { user, tokens };
     }
+
 
     public async signIn(
         dto: ISignIn,
@@ -61,9 +63,6 @@ class AuthService {
     }
 
     public async refreshToken(refreshToken: string): Promise<ITokenPair> {
-        if (!refreshToken) {
-            throw new ApiError('No refresh token provided', 401);
-        }
 
         const payload = tokenService.verifyToken(refreshToken, TokenTypeEnum.REFRESH);
 
@@ -100,12 +99,7 @@ class AuthService {
         console.log(`Deleted ${result} tokens for user ${userId}`);
 
     }
-    private async isEmailExistOrThrow(email: string): Promise<void> {
-        const user = await userRepository.getByEmail(email);
-        if (user) {
-            throw new ApiError('Email already exists', 409);
-        }
-    }
+
 }
 
 export const authService = new AuthService();
