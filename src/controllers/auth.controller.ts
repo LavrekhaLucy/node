@@ -93,7 +93,32 @@ public async logoutAll(req: Request, res: Response, next: NextFunction) {
             next(e);
         }
     }
-
+    // public async verifyEmail(req: Request, res: Response, next: NextFunction) {
+    //     try {
+    //         // const token = req.query.token as string;
+    //         // if (!token) throw new ApiError('No token provided', 401);
+    //
+    //         const jwtPayload = tokenService.verifyToken(token, ActionTokenTypeEnum.VERIFY_EMAIL);
+    //
+    //         const tokenInDB = await actionTokenRepository.findOneByParams({
+    //             _userId: jwtPayload.userId,
+    //             token,
+    //             type: ActionTokenTypeEnum.VERIFY_EMAIL,
+    //         });
+    //
+    //         // if (!tokenInDB) {
+    //         //     throw new ApiError('Invalid or expired token', 401);
+    //         // }
+    //
+    //         await userRepository.updateById(jwtPayload.userId, { isEmailVerified: true });
+    //
+    //         await actionTokenRepository.deleteManyByParams({ _userId: jwtPayload.userId, type: ActionTokenTypeEnum.VERIFY_EMAIL });
+    //
+    //         res.status(200).json({ message: 'Email successfully verified!' });
+    //     } catch (e) {
+    //         next(e);
+    //     }
+    // }
 }
 
 export const authController = new AuthController();

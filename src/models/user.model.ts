@@ -9,6 +9,7 @@ const UserSchema = new Schema({
     age: {type: Number, required: true},
     phone: {type: Number, required: false},
     role: {type: String, enum: RoleEnum, default: RoleEnum.User},
+    isEmailVerified: {type: Boolean, default: false,},
     isVerified: {type: Boolean, default: false},
     isDeleted: {type: Boolean, default: false},
 },
@@ -19,3 +20,4 @@ const UserSchema = new Schema({
 
 );
 export const User = model<IUser>('users', UserSchema);
+

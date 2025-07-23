@@ -65,6 +65,8 @@ class AuthMiddleware {
             next(e);
         }
     }
+
+
 }
 
 export const authMiddleware = new AuthMiddleware();

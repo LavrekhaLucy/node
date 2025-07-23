@@ -87,6 +87,7 @@ class AuthService {
 
         return newTokens;
     }
+
     public async logout(refreshToken: string): Promise<void> {
 
         const token = await tokenRepository.findByParams({ refreshToken });
@@ -95,12 +96,12 @@ class AuthService {
          await tokenRepository.deleteByParams({ refreshToken });
             }
 
-
     public async logoutAll(userId: string): Promise<void> {
         const result = await tokenRepository.deleteByParams({ _userId: userId });
         console.log(`Deleted ${result} tokens for user ${userId}`);
 
     }
+
     public async forgotPasswordSendEmail(dto: IResetPasswordSend): Promise<void> {
         const user = await userRepository.getByEmail(dto.email);
         if (!user) {
@@ -135,6 +136,7 @@ class AuthService {
         jwtPayload: ITokenPayload,
     ): Promise<void> {
         const password = await passwordService.hashPassword(dto.password);
+
         await userRepository.updateById(jwtPayload.userId, { password });
 
         await actionTokenRepository.deleteManyByParams({
@@ -143,6 +145,29 @@ class AuthService {
         });
         await tokenRepository.deleteByParams({ _userId: jwtPayload.userId });
     }
+
+//     public async verifyEmail(email: string): Promise<void> {
+//     const tokenPayload = {
+//         userId: createdUser._id.toString(),
+//         email: createdUser.email,
+//         name: createdUser.name,
+//     };
+//
+//     const verifyEmailToken = tokenService.generateActionTokens(
+//         tokenPayload,
+//         ActionTokenTypeEnum.VERIFY_EMAIL
+//     );
+//
+// // 💾 Записати в базу
+//     await actionTokenRepository.create({
+//                                            _userId: createdUser._id,
+//                                            token: verifyEmailToken,
+//                                            type: ActionTokenTypeEnum.VERIFY_EMAIL,
+//                                        });
+//
+// // 📧 Надіслати email (фейковий виклик)
+//     await mailService.sendVerifyEmail(createdUser.email, verifyEmailToken);
+// }
 }
 
 export const authService = new AuthService();

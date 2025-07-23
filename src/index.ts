@@ -38,7 +38,7 @@ app.listen(port, async ()  => {
  await mongoose.connect(mongo);
 
 
-    console.log(`Server started on https://${host}:${port}`);
+    console.log(`Server started on http://${host}:${port}`);
 });
 
 

@@ -7,27 +7,20 @@ import {ActionTokenTypeEnum} from '../enums/action-token-type.enum';
 
 class TokenService {
     public generateTokens(payload: ITokenPayload): ITokenPair {
-        const accessToken = jsonwebtoken.sign(
-            payload,
-            configs.JWT_ACCESS_SECRET,
-            {
-                expiresIn: configs.JWT_ACCESS_EXPIRATION,
-            }
-        );
-
+        const accessToken = jsonwebtoken.sign(payload,
+            configs.JWT_ACCESS_SECRET, {
+            expiresIn: configs.JWT_ACCESS_EXPIRATION,
+        });
         const refreshToken = jsonwebtoken.sign(
             payload,
             configs.JWT_REFRESH_SECRET,
-            {
-                expiresIn: configs.JWT_REFRESH_EXPIRATION,
-            }
+            { expiresIn: configs.JWT_REFRESH_EXPIRATION },
         );
-
         return { accessToken, refreshToken };
 
     }
 
-    public verifyToken(token: string, type: TokenTypeEnum): ITokenPayload {
+    public verifyToken(token: string, type: TokenTypeEnum | ActionTokenTypeEnum,): ITokenPayload {
         try {
             let secret: string;
 
@@ -39,6 +32,13 @@ class TokenService {
                 case TokenTypeEnum.REFRESH:
                     secret = configs.JWT_REFRESH_SECRET;
                     break;
+
+                case ActionTokenTypeEnum.FORGOT_PASSWORD:
+                    secret = configs.ACTION_FORGOT_PASSWORD_SECRET;
+                    break;
+
+                default:
+                    throw new ApiError('Invalid token type', 400);
             }
 
             return jsonwebtoken.verify(token, secret) as ITokenPayload;
@@ -48,7 +48,9 @@ class TokenService {
         }
     }
 
-    public generateActionTokens(payload: ITokenPayload, tokenType: ActionTokenTypeEnum,
+    public generateActionTokens(
+        payload: ITokenPayload,
+        tokenType: ActionTokenTypeEnum,
     ): string {
         let secret: string;
         let expiresIn: string;
@@ -58,9 +60,16 @@ class TokenService {
                 secret = configs.ACTION_FORGOT_PASSWORD_SECRET;
                 expiresIn = configs.ACTION_FORGOT_PASSWORD_EXPIRATION;
                 break;
+
+            case ActionTokenTypeEnum.VERIFY_EMAIL:
+                secret = configs.ACTION_VERIFY_EMAIL_SECRET;
+                expiresIn = configs.ACTION_VERIFY_EMAIL_EXPIRATION;
+                break;
+
             default:
                 throw new ApiError('Invalid token type', 400);
         }
+
 
         return jsonwebtoken.sign(payload, secret, { expiresIn });
     }
