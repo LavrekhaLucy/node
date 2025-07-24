@@ -7,15 +7,16 @@ export type EmailTypeToPayload = {
 
     [EmailTypeEnum.FORGOT_PASSWORD]: PickRequired<
         EmailPayloadCombined,
-        'name' | 'email'|'actionToken'
-    >;
+        'name' | 'email'|'actionToken'>;
 
     [EmailTypeEnum.LOGOUT_ALL]: PickRequired<
         EmailPayloadCombined,
-       'name' | 'email'
-    >;
+       'name' | 'email'>;
 
     [EmailTypeEnum.OLD_VISIT]: PickRequired<EmailPayloadCombined, 'email'>;
+
+    [EmailTypeEnum.VERIFY_EMAIL]: PickRequired<EmailPayloadCombined,
+        'name' | 'email' | 'verifyLink'>;
 
 
 };
