@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from 'express';
-import {IResetPasswordSend, IResetPasswordSet, ISignIn, IUser} from '../interfaces/user.interface';
+import {IResetPasswordSend, IResetPasswordSet, ISignIn, IUser, IVerify} from '../interfaces/user.interface';
 import {authService} from '../services/auth.service';
 import {ITokenPair, ITokenPayload} from '../interfaces/token.interface';
 import {emailService} from '../services/email.service';
@@ -47,27 +47,25 @@ class AuthController {
         }
     }
 
-public async logoutAll(req: Request, res: Response, next: NextFunction) {
-    try {
-        const { userId:_id, email, name } = res.locals.jwtPayload as ITokenPayload;
+    public async logoutAll(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { userId:_id, email, name } = res.locals.jwtPayload as ITokenPayload;
 
-        await authService.logoutAll(_id);
-        await emailService.sendMail(
-            EmailTypeEnum.LOGOUT_ALL,
-            'lavreha7@gmail.com',
-            {
-                name,
-                email,
-            });
-        res.status(200).json({ message: 'All sessions terminated. Email sent.' });
-    } catch (e) {
-        next(e);
+            await authService.logoutAll(_id);
+            await emailService.sendMail(
+                EmailTypeEnum.LOGOUT_ALL,
+                'lavreha7@gmail.com',
+                {
+                    name,
+                    email,
+                });
+            res.status(200).json({ message: 'All sessions terminated. Email sent.' });
+        } catch (e) {
+            next(e);
+        }
     }
-}
-    public async forgotPasswordSendEmail(
-        req: Request,
-        res: Response,
-        next: NextFunction,
+
+    public async forgotPasswordSendEmail(req: Request, res: Response, next: NextFunction,
     ) {
         try {
             const dto = req.body as IResetPasswordSend;
@@ -78,10 +76,7 @@ public async logoutAll(req: Request, res: Response, next: NextFunction) {
         }
     }
 
-    public async forgotPasswordSet(
-        req: Request,
-        res: Response,
-        next: NextFunction,
+    public async forgotPasswordSet(req: Request, res: Response, next: NextFunction,
     ) {
         try {
             const jwtPayload = req.res.locals.jwtPayload as ITokenPayload;
@@ -95,13 +90,71 @@ public async logoutAll(req: Request, res: Response, next: NextFunction) {
     }
     public async register(req: Request, res: Response, next: NextFunction) {
         try {
-            await authService.register(req.body);
+
+            const dto = req.body as IVerify;
+
+            await authService.register(dto);
             res.status(201).json({ message: 'User created. Please verify your email.' });
         } catch (e) {
             next(e);
         }
     }
-
+    // public async verifyEmail(req: Request, res: Response, next: NextFunction) {
+    //     try {
+    //         const token = req.query.token as string;
+    //         if (!token) {
+    //             throw new ApiError('Token is missing', 400);
+    //         }
+    //
+    //         const payload = tokenService.verifyToken(token, ActionTokenTypeEnum.VERIFY_EMAIL);
+    //
+    //         const tokenEntity = await actionTokenRepository.findOneByParams({
+    //             token,
+    //             _userId: payload.userId,
+    //             type: ActionTokenTypeEnum.VERIFY_EMAIL,
+    //         });
+    //
+    //         if (!tokenEntity) {
+    //             throw new ApiError('Token is not valid or already used', 401);
+    //         }
+    //
+    //         await userRepository.updateById(payload.userId, {
+    //             isEmailVerified: true,
+    //         });
+    //
+    //         await actionTokenRepository.deleteManyByParams({
+    //             _userId: payload.userId,
+    //             type: ActionTokenTypeEnum.VERIFY_EMAIL,
+    //         });
+    //
+    //         res.status(200).json({ message: 'Email successfully verified' });
+    //     } catch (e) {
+    //         next(e);
+    //     }
+    // }
+//     public async verify(req: Request, res: Response, next: NextFunction) {
+//         try {
+//             const jwtPayload = req.res.locals.jwtPayload as ITokenPayload;
+//
+//             await authService.verify(jwtPayload);
+//             res.sendStatus(204);
+//         } catch (e) {
+//             next(e);
+//         }
+//     }
+//
+//     public async changePassword(req: Request, res: Response, next: NextFunction) {
+//         try {
+//             const jwtPayload = req.res.locals.jwtPayload as ITokenPayload;
+//             const dto = req.body as IChangePassword;
+//
+//             await authService.changePassword(jwtPayload, dto);
+//             res.sendStatus(204);
+//         } catch (e) {
+//             next(e);
+//         }
+//     }
+// }
 }
 
 export const authController = new AuthController();

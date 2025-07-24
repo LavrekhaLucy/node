@@ -17,10 +17,10 @@ export const emailConstants = {
         subject: 'You are signed out of all devices',
         template: 'logout-all'
 },
-    [EmailTypeEnum.VERIFY_EMAIL]:{
-        subject: 'Verify email',
-        template: 'verify-email',
-    }
+    // [EmailTypeEnum.VERIFY_EMAIL]:{
+    //     subject: 'Verify email',
+    //     template: 'verify-email',
+    // }
 };
 
 

@@ -15,6 +15,9 @@ class ActionTokenRepository {
     ): Promise<void> {
         await ActionToken.deleteMany(params);
     }
+    public async findOneByParams(params: Partial<IActionToken>,): Promise<IActionToken | null> {
+        return await ActionToken.findOne(params);
+    }
 }
 
 export const actionTokenRepository = new ActionTokenRepository();

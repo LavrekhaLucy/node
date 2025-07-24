@@ -54,4 +54,5 @@ export const signInSchema = Joi.object({
         .messages({
             'string.pattern.base': 'Password must be at least 8 characters long and contain both letters and numbers',
         }),
+
 });

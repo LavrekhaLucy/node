@@ -13,9 +13,7 @@ import {ActionTokenTypeEnum} from '../enums/action-token-type.enum';
 import {actionTokenRepository} from '../repositores/action-token.repository';
 
 class AuthService {
-    public async signUp(
-        dto: Partial<IUser>,
-    ): Promise<{ user: IUser; tokens: ITokenPair }> {
+    public async signUp(dto: Partial<IUser>,): Promise<{ user: IUser; tokens: ITokenPair }> {
 
         const password = await passwordService.hashPassword(dto.password);
         const user = await userRepository.create({ ...dto, password });
@@ -38,9 +36,7 @@ class AuthService {
     }
 
 
-    public async signIn(
-        dto: ISignIn,
-    ): Promise<{ user: IUser; tokens: ITokenPair }> {
+    public async signIn(dto: ISignIn,): Promise<{ user: IUser; tokens: ITokenPair }> {
         const user = await userRepository.getByEmail(dto.email);
         if (!user) {
             throw new ApiError('User not found', 404);
@@ -131,8 +127,7 @@ class AuthService {
         });
     }
 
-    public async forgotPasswordSet(dto: IResetPasswordSet, jwtPayload: ITokenPayload):
-        Promise<void> {
+    public async forgotPasswordSet(dto: IResetPasswordSet, jwtPayload: ITokenPayload): Promise<void> {
         const password = await passwordService.hashPassword(dto.password);
 
         await userRepository.updateById(jwtPayload.userId, { password });
@@ -144,37 +139,84 @@ class AuthService {
         await tokenRepository.deleteByParams({ _userId: jwtPayload.userId });
     }
 
-    public async register(userData: Partial<IUser>,): Promise<void> {
-        // 1. Створюємо користувача
-        const createdUser = await userRepository.create(userData);
+    // public async register(dto:Partial<IUser>): Promise<void> {
+    //
+    //     const userExists = await userRepository.getByEmail(dto.email);
+    //     if (userExists) {
+    //         throw new ApiError('User with this email already exists', 409);
+    //     }
+    //
+    //     const hashedPassword = await passwordService.hashPassword(dto.password);
+    //     const createdUser = await userRepository.create({
+    //         name: dto.name,
+    //         email: dto.email,
+    //         password: hashedPassword,
+    //         role: RoleEnum.User,
+    //         isEmailVerified: false,
+    //     });
+    //
+    //     const token = tokenService.generateActionTokens(
+    //         {
+    //             userId: createdUser._id,
+    //             name: createdUser.name,
+    //             email: createdUser.email,
+    //             role: createdUser.role,
+    //         },
+    //         ActionTokenTypeEnum.VERIFY_EMAIL
+    //     );
+    //
+    //     await actionTokenRepository.create({
+    //         _userId: createdUser._id,
+    //         token,
+    //         type: ActionTokenTypeEnum.VERIFY_EMAIL,
+    //     });
+    //
+    //     await emailService.sendVerifyEmail(
+    //         EmailTypeEnum.VERIFY_EMAIL,
+    //         createdUser.email,
+    //         {
+    //             name: createdUser.name,
+    //             email: createdUser.email,
+    //             verifyLink: `${configs.APP_FRONT_URL}/auth/verify-email?token=${token}`,
+    //
+    //         }
+    //     );
+    // }
 
-        // 2. Готуємо payload для токена
-        const tokenPayload = {
-            userId: createdUser._id.toString(),
-            email: createdUser.email,
-            name: createdUser.name,
-            role: createdUser.role,
-        };
+    // public async verifyEmail(token:string): Promise<IActionToken> {
+    //     try {
+    //         const token = actionTokenRepository.findOneByParams({token});
+    //         if (!token) {
+    //             throw new ApiError('Token is missing', 400);
+    //         }
+    //
+    //         const payload = tokenService.verifyToken(token, ActionTokenTypeEnum.VERIFY_EMAIL);
+    //
+    //         const tokenEntity = await actionTokenRepository.findOneByParams({
+    //             token,
+    //             _userId: payload.userId,
+    //             type: ActionTokenTypeEnum.VERIFY_EMAIL,
+    //         });
+    //
+    //         if (!tokenEntity) {
+    //             throw new ApiError('Token is not valid or already used', 401);
+    //         }
+    //
+    //         await userRepository.updateById(payload.userId, {
+    //             isEmailVerified: true,
+    //         });
+    //
+    //         await actionTokenRepository.deleteManyByParams({
+    //             _userId: payload.userId,
+    //             type: ActionTokenTypeEnum.VERIFY_EMAIL,
+    //         });
+    //
+    //         res.status(200).json({ message: 'Email successfully verified' });
+    //     } catch (e) {
+    //         next(e);
+    //     }
+    // }
 
-        // 3. Генеруємо токен підтвердження email
-        const verifyEmailToken = tokenService.generateActionTokens(
-            tokenPayload,
-            ActionTokenTypeEnum.VERIFY_EMAIL
-        );
-
-        // 4. Зберігаємо токен у БД
-        await actionTokenRepository.create({
-            _userId: createdUser._id,
-            token: verifyEmailToken,
-            type: ActionTokenTypeEnum.VERIFY_EMAIL,
-        });
-
-        // 5. Надсилаємо лист на пошту
-        await emailService.sendVerifyEmail(
-            createdUser.email,
-            verifyEmailToken
-        );
-    }
 }
 
 export const authService = new AuthService();

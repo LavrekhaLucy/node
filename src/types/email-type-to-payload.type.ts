@@ -15,8 +15,6 @@ export type EmailTypeToPayload = {
 
     [EmailTypeEnum.OLD_VISIT]: PickRequired<EmailPayloadCombined, 'email'>;
 
-    [EmailTypeEnum.VERIFY_EMAIL]: PickRequired<EmailPayloadCombined,
-        'name' | 'email' | 'verifyLink'>;
 
 
 };

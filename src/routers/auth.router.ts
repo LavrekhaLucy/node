@@ -36,12 +36,30 @@ router.post('/logout-all',
     authController.logoutAll);
 
 router.post('/forgot-password', authController.forgotPasswordSendEmail);
-router.put(
-    '/forgot-password',
-    authMiddleware.checkActionToken,
-    authController.forgotPasswordSet,
-);
-router.get('/auth/verify-email', authController.register);
+// router.put(
+//     '/forgot-password',
+//     authMiddleware.checkActionToken,
+//     authController.forgotPasswordSet,
+// );
+
+//
+// router.put(
+//     "/forgot-password",
+//     authMiddleware.checkActionToken(ActionTokenTypeEnum.FORGOT_PASSWORD),
+//     authController.forgotPasswordSet,
+// );
+// router.post(
+//     "/change-password",
+//     authMiddleware.checkAccessToken,
+//     commonMiddleware.isBodyValid(UserValidator.changePassword),
+//     authController.changePassword,
+// );
+//
+// router.post(
+//     "/verify",
+//     authMiddleware.checkActionToken(ActionTokenTypeEnum.VERIFY_EMAIL),
+//     authController.verify,
+// );
 
 
 
