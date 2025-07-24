@@ -41,7 +41,7 @@ router.put(
     authMiddleware.checkActionToken,
     authController.forgotPasswordSet,
 );
-router.get('/auth/verify-email', authController.verifyEmail);
+router.get('/auth/verify-email', authController.register);
 
 
 

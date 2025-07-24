@@ -1,0 +1,28 @@
+<table style="width: 100%; background-color: #f4f4f4; padding: 20px 0;">
+    <tr>
+        <td>
+            <table style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; padding: 30px;">
+                <tr>
+                    <td style="text-align: center;">
+                        <h1 style="color: #333333; font-size: 24px;">Привіт, {{name}}!</h1>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="color: #555555; font-size: 16px; line-height: 1.5; padding: 10px 0;">
+                        <p style="margin: 0;">To confirm your email address, click the button below.:</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center; padding: 20px 0;">
+                 <a href="{{frontUrl}}/password/restore?token={{verifyLink}}"
+                  style="background-color: #007BFF; color: #ffffff; text-decoration: none; padding:12px24px; border-radius:5px; display: inline-block; font-weight:
+                        bold;">Confirm</a>
+
+
+                    </td>
+                </tr>
+
+            </table>
+        </td>
+    </tr>
+</table>

@@ -48,7 +48,29 @@ class EmailService {
         await this.transporter.sendMail(options);
     }
 
+    // public async sendVerifyEmail<T extends EmailTypeEnum>(
+    //     type: T,
+    //     to: string,
+    //     context: EmailTypeToPayload[T],
+    // ): Promise<void> {
+    //
+    //     const { subject, template } = emailConstants[type];
+    //
+    //     context['frontUrl'] = configs.APP_FRONT_URL;
+    //     const options = { to, subject, template, context };
+    //     await this.transporter.sendMail(options);
+    // }
 
+    public async sendVerifyEmail(email: string, token: string): Promise<void> {
+        const verifyLink = `http://your-app.com/auth/verify-email?token=${token}`;
+
+        // Це може бути HTML або простий текст:
+        const message = `Confirm email: ${verifyLink}`;
+
+        console.log('Dispatch email:', message);
+        // Якщо підключено SMTP:
+        // await transporter.sendMail({ to: email, subject: 'Verify email', text: message });
+    }
 }
 
 export const emailService = new EmailService();

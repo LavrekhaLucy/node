@@ -1,8 +1,8 @@
-import { ApiError } from '../errors/api-error';
+import {ApiError} from '../errors/api-error';
 import {ITokenPair, ITokenPayload} from '../interfaces/token.interface';
 import {IResetPasswordSend, IResetPasswordSet, ISignIn, IUser} from '../interfaces/user.interface';
-import { passwordService } from './password.service';
-import { tokenService } from './token.service';
+import {passwordService} from './password.service';
+import {tokenService} from './token.service';
 import {tokenRepository} from '../repositores/token.repository';
 import {userRepository} from '../repositores/user.repository';
 import {userService} from './user.service';
@@ -131,10 +131,8 @@ class AuthService {
         });
     }
 
-    public async forgotPasswordSet(
-        dto: IResetPasswordSet,
-        jwtPayload: ITokenPayload,
-    ): Promise<void> {
+    public async forgotPasswordSet(dto: IResetPasswordSet, jwtPayload: ITokenPayload):
+        Promise<void> {
         const password = await passwordService.hashPassword(dto.password);
 
         await userRepository.updateById(jwtPayload.userId, { password });
@@ -146,28 +144,37 @@ class AuthService {
         await tokenRepository.deleteByParams({ _userId: jwtPayload.userId });
     }
 
-//     public async verifyEmail(email: string): Promise<void> {
-//     const tokenPayload = {
-//         userId: createdUser._id.toString(),
-//         email: createdUser.email,
-//         name: createdUser.name,
-//     };
-//
-//     const verifyEmailToken = tokenService.generateActionTokens(
-//         tokenPayload,
-//         ActionTokenTypeEnum.VERIFY_EMAIL
-//     );
-//
-// // 💾 Записати в базу
-//     await actionTokenRepository.create({
-//                                            _userId: createdUser._id,
-//                                            token: verifyEmailToken,
-//                                            type: ActionTokenTypeEnum.VERIFY_EMAIL,
-//                                        });
-//
-// // 📧 Надіслати email (фейковий виклик)
-//     await mailService.sendVerifyEmail(createdUser.email, verifyEmailToken);
-// }
+    public async register(userData: Partial<IUser>,): Promise<void> {
+        // 1. Створюємо користувача
+        const createdUser = await userRepository.create(userData);
+
+        // 2. Готуємо payload для токена
+        const tokenPayload = {
+            userId: createdUser._id.toString(),
+            email: createdUser.email,
+            name: createdUser.name,
+            role: createdUser.role,
+        };
+
+        // 3. Генеруємо токен підтвердження email
+        const verifyEmailToken = tokenService.generateActionTokens(
+            tokenPayload,
+            ActionTokenTypeEnum.VERIFY_EMAIL
+        );
+
+        // 4. Зберігаємо токен у БД
+        await actionTokenRepository.create({
+            _userId: createdUser._id,
+            token: verifyEmailToken,
+            type: ActionTokenTypeEnum.VERIFY_EMAIL,
+        });
+
+        // 5. Надсилаємо лист на пошту
+        await emailService.sendVerifyEmail(
+            createdUser.email,
+            verifyEmailToken
+        );
+    }
 }
 
 export const authService = new AuthService();
