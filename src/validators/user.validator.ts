@@ -54,5 +54,10 @@ export const signInSchema = Joi.object({
         .messages({
             'string.pattern.base': 'Password must be at least 8 characters long and contain both letters and numbers',
         }),
-
+});
+export const verifyEmailSchema = Joi.object({
+    token: Joi.string().required().messages({
+        'any.required': 'Token is required for email verification',
+        'string.base': 'Token must be a string'
+    }),
 });

@@ -1,7 +1,7 @@
 import {Router} from 'express';
 import {authController} from '../controllers/auth.controller';
 import {commonMiddleware} from '../middlewares/common.middleware';
-import {signInSchema, updateUserSchema} from '../validators/user.validator';
+import {signInSchema, updateUserSchema, verifyEmailSchema} from '../validators/user.validator';
 import {authMiddleware} from '../middlewares/auth.middleware';
 import {userMiddleware} from '../middlewares/user.middleware';
 import {ActionTokenTypeEnum} from '../enums/action-token-type.enum';
@@ -44,17 +44,22 @@ router.put(
     authController.forgotPasswordSet
 );
 
+// router.post(
+//     '/verify-email',
+//     authMiddleware.checkActionToken(ActionTokenTypeEnum.VERIFY_EMAIL),
+//     authController.verify,
+// );
+// router.get(
+//     '/verify-email',
+//     authMiddleware.checkActionToken(ActionTokenTypeEnum.VERIFY_EMAIL),
+//     authController.verify,
+// );
+
 router.post(
     '/verify-email',
+    commonMiddleware.isBodyValid(verifyEmailSchema),
     authMiddleware.checkActionToken(ActionTokenTypeEnum.VERIFY_EMAIL),
     authController.verify,
 );
-router.get(
-    '/verify-email',
-    authMiddleware.checkActionToken(ActionTokenTypeEnum.VERIFY_EMAIL),
-    authController.verify,
-);
-
-
 
 export const authRouter = router;
