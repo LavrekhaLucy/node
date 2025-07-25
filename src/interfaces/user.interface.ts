@@ -19,4 +19,4 @@ export type IResetPasswordSend = Pick<IUser, 'email'>;
 
 export type IResetPasswordSet = Pick<IUser, 'password'> & { token: string };
 
-export type IVerify = Pick<IUser, '_id'|'name'|'email' >;
+

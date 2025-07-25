@@ -89,13 +89,12 @@ class AuthController {
         }
     }
 
-    public async verify(req: Request, res: Response, next: NextFunction) {
+    public async verifyEmail(req: Request, res: Response, next: NextFunction) {
         try {
             const jwtPayload = res.locals.jwtPayload as ITokenPayload;
 
-            await authService.verify(jwtPayload);
-            // res.sendStatus(204);
-            res.status(200).json({ message: 'Email verified successfully' });
+            await authService.verifyEmail(jwtPayload);
+             res.status(200).json({ message: 'Email verified successfully' });
         } catch (e) {
             next(e);
         }

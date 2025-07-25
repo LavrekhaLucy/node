@@ -19,7 +19,7 @@ export const emailConstants = {
 },
     [EmailTypeEnum.VERIFY_EMAIL]: {
         subject: 'Verify email',
-        template: 'verify email'
+        template: 'verify-email'
 },
 };
 

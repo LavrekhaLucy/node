@@ -44,22 +44,11 @@ router.put(
     authController.forgotPasswordSet
 );
 
-// router.post(
-//     '/verify-email',
-//     authMiddleware.checkActionToken(ActionTokenTypeEnum.VERIFY_EMAIL),
-//     authController.verify,
-// );
-// router.get(
-//     '/verify-email',
-//     authMiddleware.checkActionToken(ActionTokenTypeEnum.VERIFY_EMAIL),
-//     authController.verify,
-// );
-
 router.post(
     '/verify-email',
     commonMiddleware.isBodyValid(verifyEmailSchema),
     authMiddleware.checkActionToken(ActionTokenTypeEnum.VERIFY_EMAIL),
-    authController.verify,
+    authController.verifyEmail,
 );
 
 export const authRouter = router;
