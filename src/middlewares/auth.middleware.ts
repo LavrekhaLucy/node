@@ -4,7 +4,6 @@ import {ApiError} from '../errors/api-error';
 import {tokenService} from '../services/token.service';
 import {tokenRepository} from '../repositores/token.repository';
 import {ITokenPayload} from '../interfaces/token.interface';
-import {IResetPasswordSet} from '../interfaces/user.interface';
 import {actionTokenRepository} from '../repositores/action-token.repository';
 import {ActionTokenTypeEnum} from '../enums/action-token-type.enum';
 
@@ -47,45 +46,26 @@ class AuthMiddleware {
         }
     }
 
-    public async checkActionToken(req: Request, res: Response, next: NextFunction,) {
-        try {
-            const { token } = req.body as IResetPasswordSet;
-            const payload = tokenService.verifyToken(token, TokenTypeEnum.ACCESS);
-
-            const tokenEntity = await actionTokenRepository.getByToken(token);
-            if (!tokenEntity) {
-                throw new ApiError('Token is not valid', 401);
-            }
-            req.res.locals.jwtPayload = payload;
-            next();
-        } catch (e) {
-            next(e);
-        }
-    }
-
-
-
-    public checkActionTokenToVerify (type: ActionTokenTypeEnum) {
+    public checkActionToken(type: ActionTokenTypeEnum) {
         return async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const token = req.body.token as string;
                 if (!token) {
                     throw new ApiError('Token is not provided', 401);
                 }
-                const payload = tokenService.verifyToken(token, type);
+                const payload = tokenService.verifyToken(token.trim(), type);
 
                 const tokenEntity = await actionTokenRepository.getByToken(token);
                 if (!tokenEntity) {
                     throw new ApiError('Token is not valid', 401);
                 }
-                req.res.locals.jwtPayload = payload;
+                res.locals.jwtPayload = payload;
                 next();
             } catch (e) {
                 next(e);
             }
         };
     }
-
     }
 
 export const authMiddleware = new AuthMiddleware();

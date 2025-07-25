@@ -20,7 +20,7 @@ class TokenService {
 
     }
 
-    public verifyToken(token: string, type: TokenTypeEnum | ActionTokenTypeEnum,): ITokenPayload {
+    public verifyToken(token: string, type: TokenTypeEnum | ActionTokenTypeEnum): ITokenPayload {
         try {
             let secret: string;
 
@@ -46,11 +46,13 @@ class TokenService {
             }
 
             return jsonwebtoken.verify(token, secret) as ITokenPayload;
+
         } catch (e) {
             console.error(e.message);
             throw new ApiError('Invalid token', 401);
         }
     }
+
 
     public generateActionTokens(
         payload: ITokenPayload,
@@ -77,6 +79,8 @@ class TokenService {
 
         return jsonwebtoken.sign(payload, secret, { expiresIn });
     }
+
+
 }
 
 export const tokenService = new TokenService();

@@ -12,6 +12,8 @@ import {EmailTypeEnum} from '../enums/email-type.enum';
 import {ActionTokenTypeEnum} from '../enums/action-token-type.enum';
 import {actionTokenRepository} from '../repositores/action-token.repository';
 
+
+
 class AuthService {
     public async signUp(dto: Partial<IUser>,): Promise<{ user: IUser; tokens: ITokenPair }> {
 
@@ -25,15 +27,24 @@ class AuthService {
             name:user.name,
             email:user.email,
         });
-        await tokenRepository.create({ ...tokens, _userId: user._id });
+
+        const verificationToken = tokenService.generateTokens({
+            userId: user._id.toString(),
+            email: user.email,
+            role: user.role,
+            name: user.name,
+    });
+        const verificationLink = `${{frontUrl}}/auth/verify-email?token=${verificationToken}`;
 
         await emailService.sendMail(
             EmailTypeEnum.WELCOME,
             'lavreha7@gmail.com',
-            { name: user.name },
+            { name: user.name, verifyLink:verificationLink},
         );
         return { user, tokens };
     }
+
+
 
 
     public async signIn(dto: ISignIn,): Promise<{ user: IUser; tokens: ITokenPair }> {
@@ -139,84 +150,17 @@ class AuthService {
         await tokenRepository.deleteByParams({ _userId: jwtPayload.userId });
     }
 
-    // public async register(dto:Partial<IUser>): Promise<void> {
-    //
-    //     const userExists = await userRepository.getByEmail(dto.email);
-    //     if (userExists) {
-    //         throw new ApiError('User with this email already exists', 409);
-    //     }
-    //
-    //     const hashedPassword = await passwordService.hashPassword(dto.password);
-    //     const createdUser = await userRepository.create({
-    //         name: dto.name,
-    //         email: dto.email,
-    //         password: hashedPassword,
-    //         role: RoleEnum.User,
-    //         isEmailVerified: false,
-    //     });
-    //
-    //     const token = tokenService.generateActionTokens(
-    //         {
-    //             userId: createdUser._id,
-    //             name: createdUser.name,
-    //             email: createdUser.email,
-    //             role: createdUser.role,
-    //         },
-    //         ActionTokenTypeEnum.VERIFY_EMAIL
-    //     );
-    //
-    //     await actionTokenRepository.create({
-    //         _userId: createdUser._id,
-    //         token,
-    //         type: ActionTokenTypeEnum.VERIFY_EMAIL,
-    //     });
-    //
-    //     await emailService.sendVerifyEmail(
-    //         EmailTypeEnum.VERIFY_EMAIL,
-    //         createdUser.email,
-    //         {
-    //             name: createdUser.name,
-    //             email: createdUser.email,
-    //             verifyLink: `${configs.APP_FRONT_URL}/auth/verify-email?token=${token}`,
-    //
-    //         }
-    //     );
-    // }
 
-    // public async verifyEmail(token:string): Promise<IActionToken> {
-    //     try {
-    //         const token = actionTokenRepository.findOneByParams({token});
-    //         if (!token) {
-    //             throw new ApiError('Token is missing', 400);
-    //         }
-    //
-    //         const payload = tokenService.verifyToken(token, ActionTokenTypeEnum.VERIFY_EMAIL);
-    //
-    //         const tokenEntity = await actionTokenRepository.findOneByParams({
-    //             token,
-    //             _userId: payload.userId,
-    //             type: ActionTokenTypeEnum.VERIFY_EMAIL,
-    //         });
-    //
-    //         if (!tokenEntity) {
-    //             throw new ApiError('Token is not valid or already used', 401);
-    //         }
-    //
-    //         await userRepository.updateById(payload.userId, {
-    //             isEmailVerified: true,
-    //         });
-    //
-    //         await actionTokenRepository.deleteManyByParams({
-    //             _userId: payload.userId,
-    //             type: ActionTokenTypeEnum.VERIFY_EMAIL,
-    //         });
-    //
-    //         res.status(200).json({ message: 'Email successfully verified' });
-    //     } catch (e) {
-    //         next(e);
-    //     }
-    // }
+    public async verify(jwtPayload: ITokenPayload): Promise<void> {
 
+        await userRepository.updateById(jwtPayload.userId, { isVerified: true });
+        await actionTokenRepository.deleteManyByParams({
+            _userId: jwtPayload.userId,
+            type: ActionTokenTypeEnum.VERIFY_EMAIL,
+
+        });
+
+    }
 }
 
 export const authService = new AuthService();

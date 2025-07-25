@@ -7,7 +7,7 @@ export interface IUser {
     email:string;
     password: string;
     role:RoleEnum;
-    isEmailVerified?: boolean;
+    isEmailVerified: boolean;
     isVerified:boolean;
     isDeleted:boolean;
     phone?:string;

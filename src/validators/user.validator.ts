@@ -10,7 +10,7 @@ export const userBodySchema = Joi.object({
     name: Joi.string().min(3).required(),
     email: Joi.string().email().required(),
     password: Joi.string()
-        .pattern(new RegExp('^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$'))
+        .pattern(new RegExp('^(?=.*[A-Za-z])(?=.*\\d).{8,}$'))
         .required()
         .messages({
             'string.pattern.base': 'Password must be at least 8 characters long and contain both letters and numbers',
@@ -26,7 +26,7 @@ export const updateUserSchema = Joi.object({
     name: Joi.string().min(3).optional(),
     email: Joi.string().email().optional(),
     password: Joi.string()
-        .pattern(new RegExp('^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$'))
+        .pattern(new RegExp('^(?=.*[A-Za-z])(?=.*\\d).{8,}$'))
         .optional()
         .messages({
             'string.pattern.base': 'Password must be at least 8 characters long and contain both letters and numbers',
@@ -49,7 +49,7 @@ export const userQuerySchema = Joi.object({
 export const signInSchema = Joi.object({
     email: Joi.string().email().required(),
     password: Joi.string()
-        .pattern(new RegExp('^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$'))
+        .pattern(new RegExp('^(?=.*[A-Za-z])(?=.*\\d).{8,}$'))
         .optional()
         .messages({
             'string.pattern.base': 'Password must be at least 8 characters long and contain both letters and numbers',

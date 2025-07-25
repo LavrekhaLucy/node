@@ -4,6 +4,7 @@ import {commonMiddleware} from '../middlewares/common.middleware';
 import {signInSchema, updateUserSchema} from '../validators/user.validator';
 import {authMiddleware} from '../middlewares/auth.middleware';
 import {userMiddleware} from '../middlewares/user.middleware';
+import {ActionTokenTypeEnum} from '../enums/action-token-type.enum';
 
 
 const router = Router();
@@ -21,7 +22,6 @@ router.post(
     authController.signIn
 );
 
-
 router.post(
     '/refresh',
     authMiddleware.checkRefreshToken,
@@ -35,31 +35,25 @@ router.post('/logout-all',
     authMiddleware.checkAccessToken,
     authController.logoutAll);
 
-router.post('/forgot-password', authController.forgotPasswordSendEmail);
-// router.put(
-//     '/forgot-password',
-//     authMiddleware.checkActionToken,
-//     authController.forgotPasswordSet,
-// );
+router.post('/forgot-password',
+    authController.forgotPasswordSendEmail);
 
-//
-// router.put(
-//     "/forgot-password",
-//     authMiddleware.checkActionToken(ActionTokenTypeEnum.FORGOT_PASSWORD),
-//     authController.forgotPasswordSet,
-// );
-// router.post(
-//     "/change-password",
-//     authMiddleware.checkAccessToken,
-//     commonMiddleware.isBodyValid(UserValidator.changePassword),
-//     authController.changePassword,
-// );
-//
-// router.post(
-//     "/verify",
-//     authMiddleware.checkActionToken(ActionTokenTypeEnum.VERIFY_EMAIL),
-//     authController.verify,
-// );
+router.put(
+    '/forgot-password',
+    authMiddleware.checkActionToken(ActionTokenTypeEnum.FORGOT_PASSWORD),
+    authController.forgotPasswordSet
+);
+
+router.post(
+    '/verify-email',
+    authMiddleware.checkActionToken(ActionTokenTypeEnum.VERIFY_EMAIL),
+    authController.verify,
+);
+router.get(
+    '/verify-email',
+    authMiddleware.checkActionToken(ActionTokenTypeEnum.VERIFY_EMAIL),
+    authController.verify,
+);
 
 
 
