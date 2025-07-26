@@ -4,6 +4,7 @@ import {userRouter} from './routers/user.router';
 import {configs} from './configs/config';
 import * as mongoose from 'mongoose';
 import {authRouter} from './routers/auth.router';
+import {cronRunner} from './crons';
 
 
 const app = express();
@@ -37,7 +38,7 @@ process.on('uncaughtException', (error) => {
 app.listen(port, async ()  => {
  await mongoose.connect(mongo);
 
-
+    cronRunner();
     console.log(`Server started on http://${host}:${port}`);
 });
 
