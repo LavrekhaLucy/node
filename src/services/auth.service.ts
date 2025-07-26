@@ -193,13 +193,46 @@ class AuthService {
             dto.oldPassword,
             user.password,
         );
+        if (!user || !user.password) {
+            throw new ApiError('User or password not found', 500);
+        }
         if (!isPasswordCorrect) {
             throw new ApiError('Invalid previous password', 401);
         }
-        const password = await passwordService.hashPassword(dto.password);
-        await userRepository.updateById(jwtPayload.userId, { password });
-        await tokenRepository.deleteByParams({ _userId: jwtPayload.userId });
+
+        const cutoffDate = new Date();
+        cutoffDate.setDate(cutoffDate.getDate() - configs.PASSWORD_REUSE_DAYS);
+
+        const recentOldPasswords = (user.oldPasswords || []).filter(
+            (oldPass) => oldPass.usedAt >= cutoffDate,
+        );
+
+            for (const oldPass of recentOldPasswords) {
+                const isNewPasswordSameAsOld = await passwordService.comparePassword(
+                    dto.password,
+                    oldPass.hash,
+                );
+        if (!oldPass?.hash) {
+        throw new ApiError('Old password hash is missing', 500);
+          }
+        if (isNewPasswordSameAsOld) {
+            throw new ApiError('New password cannot be one of your recent passwords', 400);
+        }
     }
+        const newHashedPassword = await passwordService.hashPassword(dto.password);
+        const updatedOldPasswords = [
+            ...(user.oldPasswords || []),
+            { hash: user.password, usedAt: new Date() },
+        ];
+
+        const limitedOldPasswords = updatedOldPasswords.slice(-configs.OLD_PASSWORDS_LIMIT);
+
+        await userRepository.updateById(jwtPayload.userId, { password:newHashedPassword, oldPasswords: limitedOldPasswords});
+        await tokenRepository.deleteByParams({ _userId: jwtPayload.userId });
+
+    }
+
+
 }
 
 export const authService = new AuthService();

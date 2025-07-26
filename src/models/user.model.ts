@@ -6,6 +6,12 @@ const UserSchema = new Schema({
     name: {type: String, required: true},
     email: {type: String, required: true, unique: true, match: /^\S+@\S+\.\S+$/},
     password: { type: String, required: true, select: false },
+    oldPasswords: {
+     type: [{
+         hash: { type: String, required: true },
+         usedAt: { type: Date, required: true, default: Date.now },}],
+     default: [],
+        },
     age: {type: Number, required: true},
     phone: {type: Number, required: false},
     role: {type: String, enum: RoleEnum, default: RoleEnum.User},

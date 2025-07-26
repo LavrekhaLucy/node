@@ -1,4 +1,5 @@
 import {RoleEnum} from '../enums/enum';
+import {IOldPassword} from './old-password.interface';
 
 export interface IUser {
     _id?:string;
@@ -6,6 +7,7 @@ export interface IUser {
     age:number;
     email:string;
     password: string;
+    oldPasswords?: IOldPassword[];
     role:RoleEnum;
     isVerified:boolean;
     isDeleted:boolean;
