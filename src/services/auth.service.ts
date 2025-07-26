@@ -1,6 +1,6 @@
 import {ApiError} from '../errors/api-error';
 import {ITokenPair, ITokenPayload} from '../interfaces/token.interface';
-import {IResetPasswordSend, IResetPasswordSet, ISignIn, IUser} from '../interfaces/user.interface';
+import {IChangePassword, IResetPasswordSend, IResetPasswordSet, ISignIn, IUser} from '../interfaces/user.interface';
 import {passwordService} from './password.service';
 import {tokenService} from './token.service';
 import {tokenRepository} from '../repositores/token.repository';
@@ -182,6 +182,23 @@ class AuthService {
         });
 
         console.log(` Email verified for ${user.email}`);
+    }
+
+    public async changePassword(
+        jwtPayload: ITokenPayload,
+        dto: IChangePassword,
+    ): Promise<void> {
+        const user = await userRepository.getById(jwtPayload.userId);
+        const isPasswordCorrect = await passwordService.comparePassword(
+            dto.oldPassword,
+            user.password,
+        );
+        if (!isPasswordCorrect) {
+            throw new ApiError('Invalid previous password', 401);
+        }
+        const password = await passwordService.hashPassword(dto.password);
+        await userRepository.updateById(jwtPayload.userId, { password });
+        await tokenRepository.deleteByParams({ _userId: jwtPayload.userId });
     }
 }
 

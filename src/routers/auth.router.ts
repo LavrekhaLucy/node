@@ -1,7 +1,7 @@
 import {Router} from 'express';
 import {authController} from '../controllers/auth.controller';
 import {commonMiddleware} from '../middlewares/common.middleware';
-import {signInSchema, updateUserSchema, verifyEmailSchema} from '../validators/user.validator';
+import {changePasswordSchema, signInSchema, updateUserSchema, verifyEmailSchema} from '../validators/user.validator';
 import {authMiddleware} from '../middlewares/auth.middleware';
 import {userMiddleware} from '../middlewares/user.middleware';
 import {ActionTokenTypeEnum} from '../enums/action-token-type.enum';
@@ -42,6 +42,13 @@ router.put(
     '/forgot-password',
     authMiddleware.checkActionToken(ActionTokenTypeEnum.FORGOT_PASSWORD),
     authController.forgotPasswordSet
+);
+
+router.post(
+    '/change-password',
+    authMiddleware.checkAccessToken,
+    commonMiddleware.isBodyValid(changePasswordSchema),
+    authController.changePassword,
 );
 
 router.post(

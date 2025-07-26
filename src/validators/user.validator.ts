@@ -61,3 +61,17 @@ export const verifyEmailSchema = Joi.object({
         'string.base': 'Token must be a string'
     }),
 });
+export const  changePasswordSchema = Joi.object({
+    oldPassword: Joi.string()
+        .pattern(new RegExp('^(?=.*[A-Za-z])(?=.*\\d).{8,}$'))
+        .optional()
+        .messages({
+            'string.pattern.base': 'Password must be at least 8 characters long and contain both letters and numbers',
+        }),
+    password: Joi.string()
+        .pattern(new RegExp('^(?=.*[A-Za-z])(?=.*\\d).{8,}$'))
+        .optional()
+        .messages({
+            'string.pattern.base': 'Password must be at least 8 characters long and contain both letters and numbers',
+        }),
+});
