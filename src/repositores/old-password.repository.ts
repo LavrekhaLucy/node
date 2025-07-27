@@ -12,8 +12,8 @@ class OldPasswordRepository {
     }
 
     public async deleteByParams(params: FilterQuery<IOldPassword>): Promise<number> {
-        const result = await OldPassword.deleteMany(params);
-        return result.deletedCount;
+        const {deletedCount} = await OldPassword.deleteMany(params);
+        return deletedCount;
     }
 
 }
