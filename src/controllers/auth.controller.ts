@@ -106,7 +106,6 @@ class AuthController {
             const dto = req.body as IChangePassword;
 
             await authService.changePassword(jwtPayload, dto);
-            // res.sendStatus(204);
             res.status(200).json({ message: 'Password successfully changed.'});
         } catch (e) {
             next(e);

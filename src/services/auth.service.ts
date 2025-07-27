@@ -208,13 +208,15 @@ class AuthService {
         );
 
             for (const oldPass of recentOldPasswords) {
+                if (!oldPass || typeof oldPass.hash !== 'string') {
+                    console.warn(' Invalid old password format detected:', oldPass);
+                    continue;
+                }
                 const isNewPasswordSameAsOld = await passwordService.comparePassword(
                     dto.password,
                     oldPass.hash,
                 );
-        if (!oldPass?.hash) {
-        throw new ApiError('Old password hash is missing', 500);
-          }
+
         if (isNewPasswordSameAsOld) {
             throw new ApiError('New password cannot be one of your recent passwords', 400);
         }
