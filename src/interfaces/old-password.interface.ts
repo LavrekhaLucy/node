@@ -1,4 +1,7 @@
 export interface IOldPassword {
-    hash: string;
-    usedAt: Date;
+    _id?: string;
+    password: string;
+    _userId: string;
+    createdAt?: Date;
+    updatedAt?: Date;
 }

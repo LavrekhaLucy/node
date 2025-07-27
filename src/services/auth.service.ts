@@ -12,6 +12,7 @@ import {EmailTypeEnum} from '../enums/email-type.enum';
 import {ActionTokenTypeEnum} from '../enums/action-token-type.enum';
 import {actionTokenRepository} from '../repositores/action-token.repository';
 import { configs } from '../configs/config';
+import {oldPasswordRepository} from '../repositores/old-password.repository';
 
 
 class AuthService {
@@ -189,6 +190,7 @@ class AuthService {
         dto: IChangePassword,
     ): Promise<void> {
         const user = await userRepository.getById(jwtPayload.userId);
+        const oldPasswords = await oldPasswordRepository.findByParams(jwtPayload.userId);
         const isPasswordCorrect = await passwordService.comparePassword(
             dto.oldPassword,
             user.password,
@@ -199,42 +201,24 @@ class AuthService {
         if (!isPasswordCorrect) {
             throw new ApiError('Invalid previous password', 401);
         }
-
-        const cutoffDate = new Date();
-        cutoffDate.setDate(cutoffDate.getDate() - configs.PASSWORD_REUSE_DAYS);
-
-        const recentOldPasswords = (user.oldPasswords || []).filter(
-            (oldPass) => oldPass.usedAt >= cutoffDate,
-        );
-
-            for (const oldPass of recentOldPasswords) {
-                if (!oldPass || typeof oldPass.hash !== 'string') {
-                    console.warn(' Invalid old password format detected:', oldPass);
-                    continue;
+        const passwords = [...oldPasswords, {password:user.password}];
+        await Promise.all(
+            passwords.map(async (oldPassword) => {
+                const isPrevious = await passwordService.comparePassword(dto.password, oldPassword.password);
+                if (isPrevious) {
+                    throw new ApiError('Passwords do not match', 401);
                 }
-                const isNewPasswordSameAsOld = await passwordService.comparePassword(
-                    dto.password,
-                    oldPass.hash,
-                );
+            }),
+        );
+        const  password = await passwordService.hashPassword(dto.password);
 
-        if (isNewPasswordSameAsOld) {
-            throw new ApiError('New password cannot be one of your recent passwords', 400);
-        }
-    }
-        const newHashedPassword = await passwordService.hashPassword(dto.password);
-        const updatedOldPasswords = [
-            ...(user.oldPasswords || []),
-            { hash: user.password, usedAt: new Date() },
-        ];
-
-        const limitedOldPasswords = updatedOldPasswords.slice(-configs.OLD_PASSWORDS_LIMIT);
-
-        await userRepository.updateById(jwtPayload.userId, { password:newHashedPassword, oldPasswords: limitedOldPasswords});
+        await userRepository.updateById(jwtPayload.userId, { password});
+        await oldPasswordRepository.create({
+            _userId:jwtPayload.userId,
+            password:user.password
+        });
         await tokenRepository.deleteByParams({ _userId: jwtPayload.userId });
-
     }
-
-
 }
 
 export const authService = new AuthService();
