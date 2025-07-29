@@ -13,7 +13,7 @@ export type EmailTypeToPayload = {
         EmailPayloadCombined,
        'name' | 'email'>;
 
-    [EmailTypeEnum.OLD_VISIT]: PickRequired<EmailPayloadCombined, 'email'>;
+    [EmailTypeEnum.OLD_VISIT]: PickRequired<EmailPayloadCombined, 'name'>;
 
     [EmailTypeEnum.VERIFY_EMAIL]: PickRequired<EmailPayloadCombined, 'name'|'verifyLink'>;
 

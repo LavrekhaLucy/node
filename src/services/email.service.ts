@@ -37,9 +37,23 @@ class EmailService {
 
     public async sendMail<T extends EmailTypeEnum>(type: T, to: string, context: EmailTypeToPayload[T],): Promise<void> {
         const {subject, template} = emailConstants[type];
+
         context['frontUrl'] = configs.APP_FRONT_URL;
         const options = {to, subject, template, context};
-        await this.transporter.sendMail(options);
+        console.log(options);
+        // await this.transporter.sendMail(options);
     }
 }
 export const emailService = new EmailService();
+
+// public async sendMail<T extends EmailTypeEnum>(
+//     type: T,
+//     to: string,
+//     context: EmailTypeToPayload[T],
+// ): Promise<void> {
+//     const { subject, template } = emailConstants[type];
+//
+//     context["frontUrl"] = configs.APP_FRONT_URL;
+//     const options = { to, subject, template, context };
+//     await this.transporter.sendMail(options);
+// }

@@ -1,5 +1,6 @@
 import {IUser} from '../interfaces/user.interface';
 import {User} from '../models/user.model';
+import {Token} from '../models/token.model';
 
 class UserRepository {
     public async getList(): Promise<IUser[]> {
@@ -27,6 +28,23 @@ class UserRepository {
 
     public async deleteById (userId: string): Promise<void>  {
 await  User.deleteOne({_id: userId});
+    }
+
+    public async findWithOutActivity(date: Date): Promise<IUser[]> {
+        return await User.aggregate([
+            {
+                $lookup: {
+                    from: Token.collection.name,
+                    let: { userId: '$_id' },
+                    pipeline: [
+                        { $match: { $expr: { $eq: ['$_userId', '$$userId'] } } },
+                        { $match: { createdAt: { $gt: date } } },
+                    ],
+                    as: 'tokens',
+                },
+            },
+            { $match: { tokens: { $size: 0 } } },
+        ]);
     }
 
 }
