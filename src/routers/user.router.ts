@@ -12,7 +12,7 @@ const router = Router();
 router.get(
     '/',
     commonMiddleware.isQueryValid(listQuerySchema),
-    userController.getList,
+    userController.getList
 );
 
 router.get('/me',

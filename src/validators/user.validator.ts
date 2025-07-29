@@ -85,3 +85,4 @@ export const listQuerySchema = Joi.object({
     order: Joi.string().valid(...Object.values(OrderEnum)),
     orderBy: Joi.string().valid(...Object.values(UserListOrderByEnum)),
 });
+

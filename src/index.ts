@@ -5,6 +5,10 @@ import {configs} from './configs/config';
 import * as mongoose from 'mongoose';
 import {authRouter} from './routers/auth.router';
 import {cronRunner} from './crons';
+import fileUpload from 'express-fileupload';
+import swaggerUi from 'swagger-ui-express';
+
+import swaggerDocument from '../docs/swagger.json';
 
 
 const app = express();

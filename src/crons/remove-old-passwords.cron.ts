@@ -13,4 +13,4 @@ const handler = async () => {
     }
 };
 
-export const removeOldPasswordsCronJob = new CronJob('*/5 * * * * *', handler);
+export const removeOldPasswordsCronJob = new CronJob('* * * * 1 *', handler);

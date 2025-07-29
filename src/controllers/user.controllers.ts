@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 
 import { ITokenPayload } from '../interfaces/token.interface';
-import { IUser } from '../interfaces/user.interface';
+import {IUser, IUserListQuery} from '../interfaces/user.interface';
 import { userService } from '../services/user.service';
 
 class UserController {
@@ -14,6 +14,7 @@ class UserController {
             next(e);
         }
     }
+
 
     public async getById(req: Request, res: Response, next: NextFunction) {
         try {

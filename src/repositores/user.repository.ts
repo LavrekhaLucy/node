@@ -1,11 +1,9 @@
-import {IUser} from '../interfaces/user.interface';
+import {IUser, IUserListQuery} from '../interfaces/user.interface';
 import {User} from '../models/user.model';
 import {Token} from '../models/token.model';
+import {FilterQuery} from 'mongoose';
 
 class UserRepository {
-    // public async getList(): Promise<IUser[]> {
-    //     return await User.find({});
-    // }
 
     public async getList(query: IUserListQuery): Promise<[IUser[], number]> {
         const filterObj: FilterQuery<IUser> = { isVerified: true };
@@ -20,6 +18,7 @@ class UserRepository {
         // TODO - Add sorting
 
         const skip = query.limit * (query.page - 1);
+
         return await Promise.all([
             User.find(filterObj).limit(query.limit).skip(skip),
             User.countDocuments(filterObj),

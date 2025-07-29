@@ -1,10 +1,11 @@
-import { configs } from '../config/configs';
+
 import {
     IUser,
     IUserListQuery,
     IUserListResponse,
     IUserResponse,
 } from '../interfaces/user.interface';
+import {configs} from '../configs/config';
 
 class UserPresenter {
     public toPublicResDto(entity: IUser): IUserResponse {

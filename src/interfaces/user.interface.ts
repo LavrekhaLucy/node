@@ -1,5 +1,7 @@
 import {RoleEnum} from '../enums/enum';
 import {IOldPassword} from './old-password.interface';
+import {OrderEnum} from '../enums/order.enum';
+import {UserListOrderByEnum} from '../enums/user-list-order-by.enum';
 
 export interface IUser {
     _id?:string;
@@ -11,10 +13,12 @@ export interface IUser {
     role:RoleEnum;
     isVerified:boolean;
     isDeleted:boolean;
+    avatar?:string;
     phone?:string;
     createdAt?:Date;
     updatedAt?:Date;
 }
+
 export type ISignIn = Pick<IUser, 'email' | 'password'>;
 
 export type IResetPasswordSend = Pick<IUser, 'email'>;
