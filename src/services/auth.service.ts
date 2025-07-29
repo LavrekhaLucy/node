@@ -196,7 +196,7 @@ class AuthService {
             user.password,
         );
         if (!user || !user.password) {
-            throw new ApiError('User or password not found', 500);
+            throw new ApiError('User or password not found', 404);
         }
         if (!isPasswordCorrect) {
             throw new ApiError('Invalid previous password', 401);
@@ -206,7 +206,7 @@ class AuthService {
             passwords.map(async (oldPassword) => {
                 const isPrevious = await passwordService.comparePassword(dto.password, oldPassword.password);
                 if (isPrevious) {
-                    throw new ApiError('Passwords do not match', 401);
+                    throw new ApiError('This password was already used', 400);
                 }
             }),
         );
