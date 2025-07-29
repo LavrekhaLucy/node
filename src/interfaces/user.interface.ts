@@ -23,4 +23,28 @@ export type IResetPasswordSet = Pick<IUser, 'password'> & { token: string };
 
 export type IChangePassword = Pick<IUser, 'password'> & { oldPassword: string };
 
+export interface IUserListQuery {
+    limit?: number;
+    page?: number;
+    search?: string;
+    order?: OrderEnum;
+    orderBy?: UserListOrderByEnum;
+}
+
+export type IUserResponse = Pick<
+    IUser,
+    | '_id'
+    | 'name'
+    | 'email'
+    | 'age'
+    | 'role'
+    | 'avatar'
+    | 'isDeleted'
+    | 'isVerified'
+>;
+
+export interface IUserListResponse {
+    data: IUserResponse[];
+    total: number;
+}
 

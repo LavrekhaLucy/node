@@ -5,20 +5,29 @@ import { authMiddleware } from '../middlewares/auth.middleware';
 import { commonMiddleware } from '../middlewares/common.middleware';
 
 import {userController} from '../controllers/user.controllers';
-import {updateUserSchema} from '../validators/user.validator';
+import {listQuerySchema, updateUserSchema} from '../validators/user.validator';
 
 const router = Router();
 
-router.get('/', userController.getList);
+router.get(
+    '/',
+    commonMiddleware.isQueryValid(listQuerySchema),
+    userController.getList,
+);
 
-router.get('/me', authMiddleware.checkAccessToken, userController.getMe);
+router.get('/me',
+    authMiddleware.checkAccessToken,
+    userController.getMe);
+
 router.put(
     '/me',
     authMiddleware.checkAccessToken,
     commonMiddleware.isBodyValid(updateUserSchema),
     userController.updateMe,
 );
-router.delete('/me', authMiddleware.checkAccessToken, userController.deleteMe);
+router.delete('/me',
+    authMiddleware.checkAccessToken,
+    userController.deleteMe);
 
 router.get(
     '/:userId',

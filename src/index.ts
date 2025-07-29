@@ -14,7 +14,10 @@ const host = configs.APP_HOST;
 const mongo = configs.MONGO_URI;
 
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
+app.use(fileUpload());
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 
 app.use((req: Request, res: Response, next: NextFunction) => {
     console.log(`${req.method} ${req.path}`);
@@ -42,5 +45,5 @@ app.listen(port, async ()  => {
     console.log(`Server started on http://${host}:${port}`);
 });
 
-////
+
 

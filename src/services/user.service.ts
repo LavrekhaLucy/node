@@ -5,8 +5,10 @@ import {userRepository} from '../repositores/user.repository';
 
 
 class UserService {
-    public async getList(): Promise<IUser[]> {
-        return await userRepository.getList();
+
+    public async getList(query: IUserListQuery): Promise<IUserListResponse> {
+        const [entities, total] = await userRepository.getList(query);
+        return userPresenter.toListResDto(entities, total, query);
     }
 
     public async getById(userId: string): Promise<IUser> {

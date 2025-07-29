@@ -1,5 +1,7 @@
 import Joi from 'joi';
 import {RoleEnum} from '../enums/enum';
+import {OrderEnum} from '../enums/order.enum';
+import {UserListOrderByEnum} from '../enums/user-list-order-by.enum';
 
 
 export const userIdSchema = Joi.object({
@@ -74,4 +76,12 @@ export const  changePasswordSchema = Joi.object({
         .messages({
             'string.pattern.base': 'Password must be at least 8 characters long and contain both letters and numbers',
         }),
+});
+
+export const listQuerySchema = Joi.object({
+    limit: Joi.number().min(1).max(100).default(10),
+    page: Joi.number().min(1).default(1),
+    search: Joi.string().trim().lowercase(),
+    order: Joi.string().valid(...Object.values(OrderEnum)),
+    orderBy: Joi.string().valid(...Object.values(UserListOrderByEnum)),
 });
