@@ -78,20 +78,18 @@ class UserController {
     }
     public async deleteAvatar(req: Request, res: Response, next: NextFunction) {
         try {
-            const jwtPayload = res.locals.jwtPayload; // або req.user, залежно від реалізації
+            const jwtPayload = res.locals.jwtPayload;
             const user = await userRepository.getById(jwtPayload.userId);
 
             if (!user || !user.avatar) {
                 throw new ApiError('Avatar not found', 404);
             }
 
-            // Видаляємо файл із S3
             await s3Service.deleteFile(user.avatar);
 
-            // Очищаємо посилання на аватар у користувача
             await userRepository.updateById(user._id, { avatar: null });
 
-            res.status(204).send(); // Успішно, але без контенту
+            res.status(204).send();
         } catch (e) {
             next(e);
         }

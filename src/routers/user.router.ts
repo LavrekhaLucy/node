@@ -1,9 +1,6 @@
-import { Router } from 'express';
-
-
-import { authMiddleware } from '../middlewares/auth.middleware';
-import { commonMiddleware } from '../middlewares/common.middleware';
-
+import {Router} from 'express';
+import {authMiddleware} from '../middlewares/auth.middleware';
+import {commonMiddleware} from '../middlewares/common.middleware';
 import {userController} from '../controllers/user.controllers';
 import {updateUserSchema} from '../validators/user.validator';
 import {fileMiddleware} from '../middlewares/file.middleware';
@@ -30,15 +27,16 @@ router.delete('/me',
 router.post(
     '/me/avatar',
     authMiddleware.checkAccessToken,
-    fileMiddleware.isFileValid(),
+    fileMiddleware.isFileValid('avatar'),
     userController.uploadAvatar,
 );
+
 router.delete(
     '/me/avatar',
     authMiddleware.checkAccessToken,
-    fileMiddleware.isFileValid(),
     userController.deleteAvatar,
 );
+
 
 router.get(
     '/:userId',
