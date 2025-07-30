@@ -41,9 +41,7 @@ class UserService {
         file: UploadedFile,
     ): Promise<IUser> {
         const user = await userRepository.getById(jwtPayload.userId);
-        if (user.avatar) {
-                    await s3Service.deleteFile(user.avatar);
-                }
+
         const avatar = await s3Service.uploadFile(
             file,
             FileItemTypeEnum.USER,
@@ -51,7 +49,9 @@ class UserService {
         );
 
         const updatedUser = await userRepository.updateById(user._id, { avatar });
-
+        if (user.avatar) {
+            await s3Service.deleteFile(user.avatar);
+        }
         return updatedUser;
     }
 
