@@ -1,10 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
-
+import { UploadedFile } from 'express-fileupload';
 import { ITokenPayload } from '../interfaces/token.interface';
 import { IUser } from '../interfaces/user.interface';
+import { userPresenter } from '../presenters/user.presenter';
 import { userService } from '../services/user.service';
-import {UploadedFile} from 'express-fileupload';
-import {userPresenter} from '../presenters/user.presenter';
+import {userRepository} from '../repositores/user.repository';
+import {ApiError} from '../errors/api-error';
+import {s3Service} from '../services/s3.service';
 
 class UserController {
     public async getList(req: Request, res: Response, next: NextFunction) {
@@ -19,7 +21,9 @@ class UserController {
     public async getById(req: Request, res: Response, next: NextFunction) {
         try {
             const userId = req.params.userId;
-            const result = await userService.getById(userId);
+
+            const user = await userService.getById(userId);
+            const result = userPresenter.toPublicResDto(user);
             res.json(result);
         } catch (e) {
             next(e);
@@ -30,7 +34,8 @@ class UserController {
         try {
             const jwtPayload = req.res.locals.jwtPayload as ITokenPayload;
 
-            const result = await userService.getMe(jwtPayload);
+            const user = await userService.getMe(jwtPayload);
+            const result = userPresenter.toPublicResDto(user);
             res.json(result);
         } catch (e) {
             next(e);
@@ -58,6 +63,7 @@ class UserController {
             next(e);
         }
     }
+
     public async uploadAvatar(req: Request, res: Response, next: NextFunction) {
         try {
             const jwtPayload = req.res.locals.jwtPayload as ITokenPayload;
@@ -70,6 +76,27 @@ class UserController {
             next(e);
         }
     }
+    public async deleteAvatar(req: Request, res: Response, next: NextFunction) {
+        try {
+            const jwtPayload = res.locals.jwtPayload; // або req.user, залежно від реалізації
+            const user = await userRepository.getById(jwtPayload.userId);
+
+            if (!user || !user.avatar) {
+                throw new ApiError('Avatar not found', 404);
+            }
+
+            // Видаляємо файл із S3
+            await s3Service.deleteFile(user.avatar);
+
+            // Очищаємо посилання на аватар у користувача
+            await userRepository.updateById(user._id, { avatar: null });
+
+            res.status(204).send(); // Успішно, але без контенту
+        } catch (e) {
+            next(e);
+        }
+    }
+
 }
 
 export const userController = new UserController();

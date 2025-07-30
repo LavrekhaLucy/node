@@ -33,6 +33,12 @@ router.post(
     fileMiddleware.isFileValid(),
     userController.uploadAvatar,
 );
+router.delete(
+    '/me/avatar',
+    authMiddleware.checkAccessToken,
+    fileMiddleware.isFileValid(),
+    userController.deleteAvatar,
+);
 
 router.get(
     '/:userId',
