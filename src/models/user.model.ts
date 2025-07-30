@@ -4,12 +4,12 @@ import {RoleEnum} from '../enums/enum';
 
 const UserSchema = new Schema({
     name: {type: String, required: true},
-    email: {type: String, required: true, unique: true, match: /^\S+@\S+\.\S+$/},
+    email: {type: String, required: true, unique: true},
     password: { type: String, required: true, select: false },
     age: {type: Number, required: true},
-    phone: {type: Number, required: false},
+    phone: {type: String, required: false},
+    avatar: { type: String, required: false },
     role: {type: String, enum: RoleEnum, default: RoleEnum.User},
-    isEmailVerified: {type: Boolean, default: false,},
     isVerified: {type: Boolean, default: false},
     isDeleted: {type: Boolean, default: false},
 },
@@ -20,4 +20,3 @@ const UserSchema = new Schema({
 
 );
 export const User = model<IUser>('users', UserSchema);
-

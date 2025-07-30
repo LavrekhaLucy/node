@@ -5,6 +5,7 @@ import {configs} from './configs/config';
 import * as mongoose from 'mongoose';
 import {authRouter} from './routers/auth.router';
 import {cronRunner} from './crons';
+import fileUpload from 'express-fileupload';
 
 
 const app = express();
@@ -15,6 +16,8 @@ const mongo = configs.MONGO_URI;
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+app.use(fileUpload());
+
 
 app.use((req: Request, res: Response, next: NextFunction) => {
     console.log(`${req.method} ${req.path}`);
