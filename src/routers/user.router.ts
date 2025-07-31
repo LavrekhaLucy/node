@@ -38,10 +38,4 @@ router.get(
 );
 
 
-router.delete(
-    '/:userId',
-    authMiddleware.checkAccessToken,
-    userController.deleteUser,
-);
-
 export const userRouter = router;

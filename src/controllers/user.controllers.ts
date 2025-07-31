@@ -73,15 +73,7 @@ class UserController {
             next(e);
         }
     }
-    public async deleteUser(req: Request, res: Response, next: NextFunction) {
-        try {
-            const { userId } = res.locals.jwtPayload;
-            await userService.deleteUser(userId);
-            res.status(204).send();
-        } catch (e) {
-            next(e);
-        }
-    }
+
 
 }
 
