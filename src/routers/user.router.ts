@@ -31,17 +31,17 @@ router.post(
     userController.uploadAvatar,
 );
 
-router.delete(
-    '/me/avatar',
-    authMiddleware.checkAccessToken,
-    userController.deleteAvatar,
-);
-
-
 router.get(
     '/:userId',
     commonMiddleware.isIdValid('userId'),
     userController.getById,
+);
+
+
+router.delete(
+    '/:userId',
+    authMiddleware.checkAccessToken,
+    userController.deleteUser,
 );
 
 export const userRouter = router;

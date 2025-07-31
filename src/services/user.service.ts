@@ -55,6 +55,20 @@ class UserService {
         return updatedUser;
     }
 
+
+
+    // public async deleteUser(userId: string): Promise<void> {
+    //     const user = await userRepository.getById(userId);
+    //
+    //     if (user?.avatar) {
+    //         await s3Service.deleteFile(user.avatar);
+    //     }
+    //
+    //     await userRepository.updateById(userId, { isDeleted: true });
+    // }
+
+
+
 }
 
 export const userService = new UserService();

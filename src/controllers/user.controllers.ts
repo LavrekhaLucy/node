@@ -1,12 +1,9 @@
-import { NextFunction, Request, Response } from 'express';
-import { UploadedFile } from 'express-fileupload';
-import { ITokenPayload } from '../interfaces/token.interface';
-import { IUser } from '../interfaces/user.interface';
-import { userPresenter } from '../presenters/user.presenter';
-import { userService } from '../services/user.service';
-import {userRepository} from '../repositores/user.repository';
-import {ApiError} from '../errors/api-error';
-import {s3Service} from '../services/s3.service';
+import {NextFunction, Request, Response} from 'express';
+import {UploadedFile} from 'express-fileupload';
+import {ITokenPayload} from '../interfaces/token.interface';
+import {IUser} from '../interfaces/user.interface';
+import {userPresenter} from '../presenters/user.presenter';
+import {userService} from '../services/user.service';
 
 class UserController {
     public async getList(req: Request, res: Response, next: NextFunction) {
@@ -76,19 +73,10 @@ class UserController {
             next(e);
         }
     }
-    public async deleteAvatar(req: Request, res: Response, next: NextFunction) {
+    public async deleteUser(req: Request, res: Response, next: NextFunction) {
         try {
-            const jwtPayload = res.locals.jwtPayload;
-            const user = await userRepository.getById(jwtPayload.userId);
-
-            if (!user || !user.avatar) {
-                throw new ApiError('Avatar not found', 404);
-            }
-
-            await s3Service.deleteFile(user.avatar);
-
-            await userRepository.updateById(user._id, { avatar: null });
-
+            const { userId } = res.locals.jwtPayload;
+            await userService.deleteUser(userId);
             res.status(204).send();
         } catch (e) {
             next(e);
