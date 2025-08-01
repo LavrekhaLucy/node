@@ -185,10 +185,7 @@ class AuthService {
         console.log(` Email verified for ${user.email}`);
     }
 
-    public async changePassword(
-        jwtPayload: ITokenPayload,
-        dto: IChangePassword,
-    ): Promise<void> {
+    public async changePassword(jwtPayload: ITokenPayload, dto: IChangePassword,): Promise<void> {
         const user = await userRepository.getById(jwtPayload.userId);
         const oldPasswords = await oldPasswordRepository.findByParams(jwtPayload.userId);
         const isPasswordCorrect = await passwordService.comparePassword(

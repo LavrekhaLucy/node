@@ -73,7 +73,16 @@ class UserController {
             next(e);
         }
     }
+    public async deleteMeAvatar(req: Request, res: Response, next: NextFunction) {
+        try {
 
+            const jwtPayload = req.res.locals.jwtPayload as ITokenPayload;
+            await userService.deleteMeAvatar(jwtPayload);
+            res.sendStatus(204);
+        } catch (e) {
+            next(e);
+        }
+    }
 
 }
 

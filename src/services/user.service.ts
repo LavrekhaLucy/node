@@ -33,19 +33,6 @@ class UserService {
     }
 
     public async deleteMe(jwtPayload: ITokenPayload): Promise<void> {
-        const user = await userRepository.getById(jwtPayload.userId);
-
-        if (!user) {
-            throw new ApiError('User not found', 404);
-        }
-        if (user.avatar) {
-            try {
-                await s3Service.deleteFile(user.avatar);
-            } catch (e) {
-                console.log(`Failed to delete avatar from S3: ${e.message}`);
-            }
-        }
-
         return await userRepository.deleteById(jwtPayload.userId);
     }
 
@@ -66,6 +53,22 @@ class UserService {
             await s3Service.deleteFile(user.avatar);
         }
         return updatedUser;
+    }
+    public async deleteMeAvatar (jwtPayload: ITokenPayload): Promise<void> {
+        const user = await userRepository.getById(jwtPayload.userId);
+
+        if (!user) {
+            throw new ApiError('User not found', 404);
+        }
+        if (user.avatar) {
+            try {
+                await s3Service.deleteFile(user.avatar);
+            } catch (e) {
+                console.log(`Failed to delete avatar from S3: ${e.message}`);
+            }
+        }
+
+        return await userRepository.deleteById(jwtPayload.userId);
     }
 
 }
