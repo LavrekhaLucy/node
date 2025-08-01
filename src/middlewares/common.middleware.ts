@@ -21,6 +21,7 @@ class CommonMiddleware {
     public isBodyValid(validator: ObjectSchema) {
         return async (req: Request, res: Response, next: NextFunction) => {
             try {
+
                 req.body = await validator.validateAsync(req.body);
                 next();
             } catch (e) {
@@ -28,7 +29,23 @@ class CommonMiddleware {
             }
         };
     }
-}
 
+    public isQueryValid(validator: ObjectSchema) {
+        return async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const validatedQuery = await validator.validateAsync(req.query);
+                Object.assign(req.query, validatedQuery);
+                next();
+            } catch (error) {
+                let errorMessage = 'Validation error';
+                    if (error.message) {
+                    errorMessage = error.message;
+                }
+                next(new ApiError(errorMessage, 400));
+            }
+        };
+    }
+
+}
 
 export const commonMiddleware = new CommonMiddleware();

@@ -1,15 +1,17 @@
 import {ApiError} from '../errors/api-error';
 import {ITokenPayload} from '../interfaces/token.interface';
-import {IUser} from '../interfaces/user.interface';
+import {IUser, IUserListQuery, IUserListResponse} from '../interfaces/user.interface';
 import {userRepository} from '../repositores/user.repository';
 import {UploadedFile} from 'express-fileupload';
 import {s3Service} from './s3.service';
 import {FileItemTypeEnum} from '../enums/file-item-type.enum';
+import {userPresenter} from '../presenters/user.presenter';
 
 
 class UserService {
-    public async getList(): Promise<IUser[]> {
-        return await userRepository.getList();
+    public async getList(query: IUserListQuery): Promise<IUserListResponse> {
+        const [entities, total] = await userRepository.getList(query);
+        return userPresenter.toListResDto(entities, total, query);
     }
 
     public async getById(userId: string): Promise<IUser> {
@@ -54,21 +56,14 @@ class UserService {
         }
         return updatedUser;
     }
-    public async deleteMeAvatar (jwtPayload: ITokenPayload): Promise<void> {
+
+    public async deleteAvatar(jwtPayload: ITokenPayload): Promise<IUser> {
         const user = await userRepository.getById(jwtPayload.userId);
 
-        if (!user) {
-            throw new ApiError('User not found', 404);
-        }
         if (user.avatar) {
-            try {
-                await s3Service.deleteFile(user.avatar);
-            } catch (e) {
-                console.log(`Failed to delete avatar from S3: ${e.message}`);
-            }
+            await s3Service.deleteFile(user.avatar);
         }
-
-        return await userRepository.deleteById(jwtPayload.userId);
+        return await userRepository.updateById(user._id, { avatar: null });
     }
 
 }

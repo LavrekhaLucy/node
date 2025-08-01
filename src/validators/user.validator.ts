@@ -1,5 +1,7 @@
 import Joi from 'joi';
 import {RoleEnum} from '../enums/enum';
+import {OrderEnum} from '../enums/order.enum';
+import {UserListOrderByEnum} from '../enums/user-list-order-by.enum';
 
 
 export const userIdSchema = Joi.object({
@@ -38,7 +40,6 @@ export const updateUserSchema = Joi.object({
     isDeleted: Joi.boolean().optional(),
 }).min(1);
 
-
 export const userQuerySchema = Joi.object({
     sortBy: Joi.string().valid('name', 'age', 'email').optional(),
     search: Joi.string().optional(),
@@ -55,12 +56,14 @@ export const signInSchema = Joi.object({
             'string.pattern.base': 'Password must be at least 8 characters long and contain both letters and numbers',
         }),
 });
+
 export const verifyEmailSchema = Joi.object({
     token: Joi.string().required().messages({
         'any.required': 'Token is required for email verification',
         'string.base': 'Token must be a string'
     }),
 });
+
 export const  changePasswordSchema = Joi.object({
     oldPassword: Joi.string()
         .pattern(new RegExp('^(?=.*[A-Za-z])(?=.*\\d).{8,}$'))
@@ -75,3 +78,14 @@ export const  changePasswordSchema = Joi.object({
             'string.pattern.base': 'Password must be at least 8 characters long and contain both letters and numbers',
         }),
 });
+
+export const listQuerySchema = Joi.object({
+
+    limit: Joi.number().min(1).max(100).default(10),
+    page: Joi.number().min(1).default(1),
+    search: Joi.string().trim().lowercase(),
+    order: Joi.string().valid(...Object.values(OrderEnum)),
+    orderBy: Joi.string().valid(...Object.values(UserListOrderByEnum)),
+});
+
+

@@ -2,13 +2,16 @@ import {Router} from 'express';
 import {authMiddleware} from '../middlewares/auth.middleware';
 import {commonMiddleware} from '../middlewares/common.middleware';
 import {userController} from '../controllers/user.controllers';
-import {updateUserSchema} from '../validators/user.validator';
+import {listQuerySchema, updateUserSchema} from '../validators/user.validator';
 import {fileMiddleware} from '../middlewares/file.middleware';
 
 const router = Router();
 
-router.get('/',
-    userController.getList);
+router.get(
+    '/',
+    commonMiddleware.isQueryValid(listQuerySchema),
+    userController.getList,
+);
 
 router.get('/me',
     authMiddleware.checkAccessToken,
@@ -33,7 +36,7 @@ router.post(
 router.delete(
     '/me/avatar',
     authMiddleware.checkAccessToken,
-    userController.deleteMeAvatar,
+    userController.deleteAvatar,
 );
 
 router.get(

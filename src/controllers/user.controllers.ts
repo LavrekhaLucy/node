@@ -1,14 +1,15 @@
 import {NextFunction, Request, Response} from 'express';
 import {UploadedFile} from 'express-fileupload';
 import {ITokenPayload} from '../interfaces/token.interface';
-import {IUser} from '../interfaces/user.interface';
+import {IUser, IUserListQuery} from '../interfaces/user.interface';
 import {userPresenter} from '../presenters/user.presenter';
 import {userService} from '../services/user.service';
 
 class UserController {
     public async getList(req: Request, res: Response, next: NextFunction) {
         try {
-            const result = await userService.getList();
+            const query = req.query as unknown as IUserListQuery;
+            const result = await userService.getList(query);
             res.json(result);
         } catch (e) {
             next(e);
@@ -73,17 +74,18 @@ class UserController {
             next(e);
         }
     }
-    public async deleteMeAvatar(req: Request, res: Response, next: NextFunction) {
-        try {
 
+    public async deleteAvatar(req: Request, res: Response, next: NextFunction) {
+        try {
             const jwtPayload = req.res.locals.jwtPayload as ITokenPayload;
-            await userService.deleteMeAvatar(jwtPayload);
-            res.sendStatus(204);
+
+            const user = await userService.deleteAvatar(jwtPayload);
+            const result = userPresenter.toPublicResDto(user);
+            res.status(201).json(result);
         } catch (e) {
             next(e);
         }
     }
-
 }
 
 export const userController = new UserController();
