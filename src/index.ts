@@ -6,7 +6,8 @@ import * as mongoose from 'mongoose';
 import {authRouter} from './routers/auth.router';
 import {cronRunner} from './crons';
 import fileUpload from 'express-fileupload';
-
+import swaggerUi from "swagger-ui-express";
+import swaggerDocument from "../docs/swagger.json";
 
 const app = express();
 
@@ -17,7 +18,7 @@ const mongo = configs.MONGO_URI;
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(fileUpload());
-
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use((req: Request, res: Response, next: NextFunction) => {
     console.log(`${req.method} ${req.path}`);
