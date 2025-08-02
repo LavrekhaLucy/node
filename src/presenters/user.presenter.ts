@@ -34,7 +34,6 @@ class UserPresenter {
                 orderBy: query.orderBy,
         };
     }
-
-}
+   }
 
 export const userPresenter = new UserPresenter();
