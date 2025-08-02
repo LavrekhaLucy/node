@@ -5,7 +5,7 @@ import {FilterQuery} from 'mongoose';
 
 class UserRepository {
        public async getList(query: IUserListQuery): Promise<[IUser[], number]> {
-        const filterObj: FilterQuery<IUser> = {"isVerified": false};
+        const filterObj: FilterQuery<IUser> = {'isVerified': false};
         if (query.search) {
             filterObj.name = { $regex: query.search, $options: 'i' };
             // filterObj.$or = [
